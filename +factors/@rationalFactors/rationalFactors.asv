@@ -1,0 +1,175 @@
+classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mixin.indexing.RedefinesParen
+    properties (SetAccess=private)
+        Numerator   {mustBeA(Numerator,"factors.integerFactors")}   = factors.integerFactors.zeros(1);
+        Denominator {mustBeA(Denominator,"factors.integerFactors")} = factors.integerFactors.ones(1);
+    end
+    %% CONSTRUCTOR
+    methods
+        function obj = rationalFactors(varargin)
+            arguments (Repeating)
+                varargin    {mustBeValidConstructorArgument}
+            end
+            switch nargin
+                case 0
+                    errorID = "rationalFactors:notEnoughInputArguments";
+                    message = "Not enough input arguments.";
+                    error(errorID,message)
+                case {1,2}
+                    if isa(varargin{1},"factors.rationalFactors")
+                        % Copy object array
+                        obj = varargin{1};
+                    else
+                        % Assign object array to Numerator property
+                        if isa(varargin{1},"factors.integerFactors")
+                            obj.Numerator = varargin{1};
+                        else
+                            obj.Numerator = factors.integerFactors(varargin{1});
+                        end
+                        obj.Denominator = repmat(obj.Denominator,size(obj.Numerator));
+                    end
+                    if nargin==2
+                        if isa(varargin{2},"factors.rationalFactors")
+                            % Implicitly divide by object array
+                            obj.Numerator = obj.Numerator.*varargin{2}.Denominator;
+                            obj.Denominator = obj.Denominator.*varargin{2}.Numerator;
+                        else
+                            % Assign object array to Denominator property
+                            obj.Denominator = obj.Denominator.*factors.integerFactors(varargin{2});
+                        end
+                        % Remove common factors
+                        [~,obj.Numerator,obj.Denominator] = commonFactors(obj.Numerator,obj.Denominator);
+                    end
+                otherwise
+                    errorID = "rationalFactors:tooManyInputArguments";
+                    message = "Too many input arguments.";
+                    error(errorID,message)
+            end
+        end
+    end
+    %% PRIVATE METHODS
+    methods (Access=protected)
+        varargout = parenReference(obj,indexOp)
+        obj = parenAssign(obj,indexOp,arg)
+        n = parenListLength(obj,indexOp,indexContext)
+        obj = parenDelete(obj,indexOp)
+    end
+    %% PUBLIC METHODS
+    methods (Access=public)
+        varargout = size(obj,varargin)
+        obj = cat(dim,varargin)
+        B = permute(A,dimorder)
+        B = transpose(A)
+        B = reshape(A,varargin)
+        TF = isfinite(A)
+        TF = isinf(A)
+        TF = isnan(A)
+        TF = isreal(A)
+        TF = isnumeric(A)
+        TF = eq(A,B)
+        TF = ne(A,B)
+        TF = gt(A,B)
+        TF = ge(A,B)
+        TF = lt(A,B)
+        TF = le(A,B)
+        Y = floor(X)
+        Y = ceil(X)
+        Y = fix(X)
+        Y = round(X)
+        X = uplus(X)
+        Y = uminus(X)
+        Y = abs(X)
+        Y = sign(X)
+        C = plus(A,B)
+        C = minus(A,B)
+        C = times(A,B)
+        C = rdivide(A,B)
+        C = ldivide(A,B)
+        R = rem(A,B)
+        B = mod(A,M)
+        C = power(A,B)
+        C = mpower(A,B)
+        B = cast(A,newclass)
+        B = double(A)
+        B = single(A)
+    end
+    %% STATIC METHODS
+    methods (Static)
+        function obj = empty(varargin)
+            obj = factors.rationalFactors(uint8.empty(varargin{:}));
+        end
+        function obj = zeros(varargin)
+            obj = factors.rationalFactors(zeros(varargin{:},"uint8"));
+        end
+        function obj = ones(varargin)
+            obj = factors.rationalFactors(ones(varargin{:},"uint8"));
+        end
+        function obj = Inf(varargin)
+            obj = factors.rationalFactors(ones(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
+        end
+        function obj = NaN(varargin)
+            obj = factors.rationalFactors(zeros(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
+        end
+    end
+    %% HIDDEN METHODS
+    methods (Hidden)
+        function mustBePositive(A)
+            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
+                errorID = "rationalFactors:mustBePositive";
+                message = "Value must be positive.";
+                throwAsCaller(MException(errorID,message))
+            end
+        end
+        function mustBeNonpositive(A)
+            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
+                errorID = "rationalFactors:mustBeNonpositive";
+                message = "Value must not be positive.";
+                throwAsCaller(MException(errorID,message))
+            end
+        end
+        function mustBeNonnegative(A)
+            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
+                errorID = "rationalFactors:mustBeNonnegative";
+                message = "Value must be nonnegative.";
+                throwAsCaller(MException(errorID,message))
+            end
+        end
+        function mustBeNegative(A)
+            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
+                errorID = "rationalFactors:mustBeNegative";
+                message = "Value must be negative.";
+                throwAsCaller(MException(errorID,message))
+            end
+        end
+        function mustBeNonzero(A)
+            if any((A.Numerator.IsZero & ~A.Denominator.IsZero),"all")
+                errorID = "rationalFactors:mustBeNonzero";
+                message = "Value must not be zero.";
+                throwAsCaller(MException(errorID,message))
+            end
+        end
+        function mustBeInteger(A)
+            errorID = "rationalFactors:mustBeInteger";
+            message = "Value must be integer.";
+            if ~all(isfinite(A),"all")
+                throwAsCaller(MException(errorID,message))
+            end
+            for elementIndex = 1:numel(A)
+                if ~(A.Numerator.IsZero(elementIndex) | isempty(A.Denominator.Factors{elementIndex}))
+                    throwAsCaller(MException(errorID,message))
+                end
+            end
+        end
+    end
+end
+%% VALIDATION FUNCTIONS
+function mustBeValidConstructorArgument(A)
+    if ~isa(A,"factors.rationalFactors")
+        try
+            mustBeInteger(A)
+        catch
+            errorID = "rationalFactors:mustBeValidConstructorArgument";
+            message = "Value must be ";
+            throwAsCaller(MException(errorID,message))
+        end
+    end
+end
