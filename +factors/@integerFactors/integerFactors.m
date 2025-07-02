@@ -43,29 +43,31 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
                     else
                         % Initialize the object array
                         obj = repmat(obj,size(varargin{1}));
-                        isZero = varargin{1}==0;
-                        if any(isZero,"all")
-                            % Account for any -0 integers
-                            obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
-                        end
-                        isNonzero = ~isZero;
-                        if any(isNonzero,"all")
-                            % Account for any nonzero integers
-                            obj.IsZero(isNonzero) = false;
-                            obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
-                            isNontrivial = abs(varargin{1}(isNonzero))~=1;
-                            if any(isNontrivial,"all")
-                                % Account for any nontrivial integers
-                                objIndices = find(isNonzero);
-                                objIndices = objIndices(isNontrivial);
-                                for elementIndex = 1:numel(objIndices)
-                                    % Decompose into prime factors
-                                    factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
-                                    obj.Factors{objIndices(elementIndex)} = unique(factors);
-                                    numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
-                                    obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
-                                    for factorIndex = 1:numberOfFactors
-                                        obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
+                        if ~isempty(obj)
+                            isZero = varargin{1}==0;
+                            if any(isZero,"all")
+                                % Account for any -0 integers
+                                obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
+                            end
+                            isNonzero = ~isZero;
+                            if any(isNonzero,"all")
+                                % Account for any nonzero integers
+                                obj.IsZero(isNonzero) = false;
+                                obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
+                                isNontrivial = abs(varargin{1}(isNonzero))~=1;
+                                if any(isNontrivial,"all")
+                                    % Account for any nontrivial integers
+                                    objIndices = find(isNonzero);
+                                    objIndices = objIndices(isNontrivial);
+                                    for elementIndex = 1:numel(objIndices)
+                                        % Decompose into prime factors
+                                        factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
+                                        obj.Factors{objIndices(elementIndex)} = unique(factors);
+                                        numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
+                                        obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
+                                        for factorIndex = 1:numberOfFactors
+                                            obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
+                                        end
                                     end
                                 end
                             end
