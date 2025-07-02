@@ -1,4 +1,24 @@
 function varargout = implicitArrayExpansion(varargin)
+% UTILITY.IMPLICITARRAYEXPANSION - Expand singleton array dimensions
+%   This utility function compares the size of the input arrays, then
+%   implicitly expands their singleton dimensions as necessary until all of
+%   the arrays have the same size. The best use case for this function is
+%   to create temporary arrays in a function that would otherwise require
+%   all input arrays to be of the same size.
+% 
+%   Syntax
+%     [B1,...,BN] = utility.implicitArrayExpansion(A1,...,AN)
+% 
+%   Input Arguments
+%     A1,...,AN - Input arrays
+%       scalars | vectors | matrices | multidimensional arrays
+%
+%   Output Arguments
+%     B1,...,BN - Implicitly expanded arrays
+%       scalars | vectors | matrices | multidimensional arrays
+%
+%   See also size, repmat, bsxfun.
+
     % Compute size of each argument array
     argNdims = zeros(1,nargin);
     for argIndex = 1:nargin
