@@ -36,9 +36,9 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
                         % Copy object array
                         obj = varargin{1};
                     elseif isa(varargin{1},"factors.rationalFactors")
-                        % Copy Numerator property of object array
+                        % Copy the numerator property of object array
                         obj = varargin{1}.Numerator;
-                        % Account for sign of Numerator and Denominator
+                        % Account for the numerator and denominator signs
                         obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
                     else
                         % Initialize the object array
