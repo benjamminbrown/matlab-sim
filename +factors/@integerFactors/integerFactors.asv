@@ -13,18 +13,17 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %     Input Arguments
 %       I - Input array
 %         scalar | vector | matrix | multidimensional array
-
     properties (SetAccess=private)
         IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether the integer is equal to zero.
         IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether the integer is negative.
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of the integer prime factors.
-        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of the integer prime factor exponents (multiplicity).
+        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of prime factors.
+        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
         function obj = integerFactors(varargin)
             arguments (Repeating)
-                varargin    {mustBeInteger}
+                varargin    {mustBeNumericOrLogical,mustBeInteger}
             end
             switch nargin
                 case 0
@@ -36,59 +35,38 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
                         % Copy object array
                         obj = varargin{1};
                     elseif isa(varargin{1},"factors.rationalFactors")
-                        % Copy Numerator property of object array
+                        % Copy the numerator property of object array
                         obj = varargin{1}.Numerator;
-                        % Account for sign of Numerator and Denominator
+                        % Account for the numerator and denominator signs
                         obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
                     else
                         % Initialize the object array
                         obj = repmat(obj,size(varargin{1}));
-                        isZero = varargin{1}==0;
-                        if any(isZero,"all")
-                            % Account for any -0 integers
-                            obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
-                        end
-                        isNonzero = ~isZero;
-                        if any(isNonzero,"all")
-                            % Account for any nonzero integers
-                            obj.IsZero(isNonzero) = false;
-                            obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
-                            isNontrivial = abs(varargin{1}(isNonzero))~=1;
-                            if any(isNontrivial,"all")
-                                % Account for any nontrivial integers
-                                objIndices = find(isNonzero);
-                                objIndices = objIndices(isNontrivial);
-                                for elementIndex = 1:numel(objIndices)
-                                    % Decompose into prime factors
-                                    factors = factor(uint64(abs(varargin{1}(elementIndex))));
-                                    obj.Factors{objIndices(elementIndex)} = unique(factors);
-                                    numberOfFactors = length(obj.Factors{elementIndex});
-                                    obj.Exponents{elementIndex} = zeros(1,numberOfFactors,"uint8");
-                                    for factorIndex = 1:numberOfFactors
-                                        obj.Exponents{elementIndex}(factorIndex) = sum(factors==obj.Factors{elementIndex}(factorIndex));
-                                    end
-                                end
+                        if ~isempty(obj)
+                            isZero = varargin{1}==0;
+                            if any(isZero,"all")
+                                % Account for any -0 integers
+                                obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
                             end
-                        end
-
-                        for elementIndex = 1:numel(varargin{1})
-                            if varargin{1}(elementIndex)==0
-                                if 1/varargin{1}(elementIndex)==-inf
-                                    % Account for -0 element
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                            else
-                                obj.IsZero(elementIndex) = false;
-                                if varargin{1}(elementIndex)<0
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                                if abs(varargin{1}(elementIndex))~=1
-                                    factors = factor(uint64(abs(varargin{1}(elementIndex))));
-                                    obj.Factors{elementIndex} = unique(factors);
-                                    numberOfFactors = length(obj.Factors{elementIndex});
-                                    obj.Exponents{elementIndex} = zeros(1,numberOfFactors,"uint8");
-                                    for factorIndex = 1:numberOfFactors
-                                        obj.Exponents{elementIndex}(factorIndex) = sum(factors==obj.Factors{elementIndex}(factorIndex));
+                            isNonzero = ~isZero;
+                            if any(isNonzero,"all")
+                                % Account for any nonzero integers
+                                obj.IsZero(isNonzero) = false;
+                                obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
+                                isNontrivial = abs(varargin{1}(isNonzero))~=1;
+                                if any(isNontrivial,"all")
+                                    % Account for any nontrivial integers
+                                    objIndices = find(isNonzero);
+                                    objIndices = objIndices(isNontrivial);
+                                    for elementIndex = 1:numel(objIndices)
+                                        % Decompose into prime factors
+                                        factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
+                                        obj.Factors{objIndices(elementIndex)} = unique(factors);
+                                        numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
+                                        obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
+                                        for factorIndex = 1:numberOfFactors
+                                            obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
+                                        end
                                     end
                                 end
                             end
@@ -171,6 +149,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     %% HIDDEN METHODS
     methods (Hidden)
         function mustBePositive(A)
+% MUSTBEPOSITIVE - Validate that value is positive
+%   This function throws an error if any value in the
+%   factors.integerFactors array is not positive.
+% 
+%   Syntax
+%     mustBePositive(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero | A.IsNegative,"all")
                 errorID = "integerFactors:mustBePositive";
                 message = "Value must be positive.";
@@ -178,6 +166,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonpositive(A)
+% MUSTBEPOSITIVE - Validate that value is nonpositive
+%   This function throws an error if any value in the
+%   factors.integerFactors array is not positive.
+% 
+%   Syntax
+%     mustBeNonpositive(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(~A.IsZero & ~A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNonpositive";
                 message = "Value must not be positive.";
@@ -199,6 +197,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonzero(A)
+% MUSTBENONZERO - Validate that value is nonzero
+%   This function throws an error if any value in the
+%   factors.integerFactors array is zero.
+% 
+%   Syntax
+%     mustBeNonzero(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero,"all")
                 errorID = "integerFactors:mustBeNonzero";
                 message = "Value must not be zero.";
@@ -206,6 +214,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeInteger(~)
+% MUSTBEINTEGER - Validate that value is integer
+%   This function never throws an error, because all values in a
+%   factors.integerFactors array must be integers.
+% 
+%   Syntax
+%     mustBeInteger(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
         end
     end
 end

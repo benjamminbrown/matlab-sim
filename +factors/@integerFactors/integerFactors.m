@@ -13,7 +13,6 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %     Input Arguments
 %       I - Input array
 %         scalar | vector | matrix | multidimensional array
-
     properties (SetAccess=private)
         IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether the integer is equal to zero.
         IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether the integer is negative.
@@ -24,7 +23,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     methods
         function obj = integerFactors(varargin)
             arguments (Repeating)
-                varargin    {mustBeInteger}
+                varargin    {mustBeNumericOrLogical,mustBeInteger}
             end
             switch nargin
                 case 0
@@ -150,6 +149,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     %% HIDDEN METHODS
     methods (Hidden)
         function mustBePositive(A)
+% MUSTBEPOSITIVE - Validate that value is positive
+%   This function throws an error if any value in the
+%   factors.integerFactors array is not positive.
+% 
+%   Syntax
+%     mustBePositive(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero | A.IsNegative,"all")
                 errorID = "integerFactors:mustBePositive";
                 message = "Value must be positive.";
@@ -157,6 +166,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonpositive(A)
+% MUSTBENONPOSITIVE - Validate that value is nonpositive
+%   This function throws an error if any value in the
+%   factors.integerFactors array is positive.
+% 
+%   Syntax
+%     mustBeNonpositive(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(~A.IsZero & ~A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNonpositive";
                 message = "Value must not be positive.";
@@ -164,6 +183,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonnegative(A)
+% MUSTBENONNEGATIVE - Validate that value is nonnegative
+%   This function throws an error if any value in the
+%   factors.integerFactors array is negative.
+% 
+%   Syntax
+%     mustBeNonnegative(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(~A.IsZero & A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNonnegative";
                 message = "Value must be nonnegative.";
@@ -171,6 +200,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNegative(A)
+% MUSTBENEGATIVE - Validate that value is negative
+%   This function throws an error if any value in the
+%   factors.integerFactors array is not negative.
+% 
+%   Syntax
+%     mustBeNegative(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero | ~A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNegative";
                 message = "Value must be negative.";
@@ -178,6 +217,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonzero(A)
+% MUSTBENONZERO - Validate that value is nonzero
+%   This function throws an error if any value in the
+%   factors.integerFactors array is zero.
+% 
+%   Syntax
+%     mustBeNonzero(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero,"all")
                 errorID = "integerFactors:mustBeNonzero";
                 message = "Value must not be zero.";
@@ -185,6 +234,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeInteger(~)
+% MUSTBEINTEGER - Validate that value is integer
+%   This function never throws an error, because all values in a
+%   factors.integerFactors array must be integers.
+% 
+%   Syntax
+%     mustBeInteger(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
         end
     end
 end
