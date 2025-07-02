@@ -14,10 +14,10 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %       I - Input array
 %         scalar | vector | matrix | multidimensional array
     properties (SetAccess=private)
-        IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether the integer is equal to zero.
-        IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether the integer is negative.
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of prime factors.
-        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of prime factor exponents (multiplicity).
+        IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether an integer is equal to zero.
+        IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether an integer is negative.
+        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of an integer's prime factors.
+        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of an integer's prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
@@ -137,12 +137,66 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     %% STATIC METHODS
     methods (Static)
         function obj = empty(varargin)
+% EMPTY - Create empty factors.integerFactors array
+%   This function creates an empty factors.integerFactors array.
+% 
+%   Syntax
+%     X = factors.integerFactors.empty
+%     X = factors.integerFactors.empty(0)
+%     X = factors.integerFactors.empty(sz1,...,szN)
+%     X = factors.integerFactors.empty(sz)
+% 
+%   Input Arguments
+%     0 - Dimension of empty square matrix
+%       zero scalar
+%     sz1,...,szN - Dimensions of array
+%       nonnegative integer scalars
+%     sz - Vector of dimensions of array
+%       nonnegative integer row vector
+% 
+%   See also isempty, size, length
             obj = factors.integerFactors(uint8.empty(varargin{:}));
         end
         function obj = zeros(varargin)
+% ZEROS - Create factors.integerFactors array of all zeros
+%   This function creates a factors.integerFactors array of all zeros.
+% 
+%   Syntax
+%     X = ZEROS
+%     X = ZEROS(n)
+%     X = ZEROS(sz1,...,szN)
+%     X = ZEROS(sz)
+%
+%   Input Arguments
+%     n - Dimension of square matrix
+%       nonnegative integer scalar
+%     sz1,...,szN - Dimensions of array
+%       nonnegative integer scalars
+%     sz - Vector of dimensions of array
+%       nonnegative integer row vector
+% 
+%   See also ones, size
             obj = factors.integerFactors(zeros(varargin{:},"uint8"));
         end
         function obj = ones(varargin)
+% ONES - Create factors.integerFactors array of all ones
+%   This function creates a factors.integerFactors array of all ones.
+% 
+%   Syntax
+%     X = ONES
+%     X = ONES(n)
+%     X = ONES(sz1,...,szN)
+%     X = ONES(sz)
+%
+%   Input Arguments
+%     n - Dimension of square matrix
+%       nonnegative integer scalar
+%     sz1,...,szN - Dimensions of array
+%       nonnegative integer scalars
+%     sz - Vector of dimensions of array
+%       nonnegative integer row vector
+% 
+%   See also zeros, size
             obj = factors.integerFactors(ones(varargin{:},"uint8"));
         end
     end
@@ -166,9 +220,9 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonpositive(A)
-% MUSTBEPOSITIVE - Validate that value is nonpositive
+% MUSTBENONPOSITIVE - Validate that value is nonpositive
 %   This function throws an error if any value in the
-%   factors.integerFactors array is not positive.
+%   factors.integerFactors array is positive.
 % 
 %   Syntax
 %     mustBeNonpositive(A)
@@ -183,6 +237,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNonnegative(A)
+% MUSTBENONNEGATIVE - Validate that value is nonnegative
+%   This function throws an error if any value in the
+%   factors.integerFactors array is negative.
+% 
+%   Syntax
+%     mustBeNonnegative(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(~A.IsZero & A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNonnegative";
                 message = "Value must be nonnegative.";
@@ -190,6 +254,16 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
         function mustBeNegative(A)
+% MUSTBENEGATIVE - Validate that value is negative
+%   This function throws an error if any value in the
+%   factors.integerFactors array is not negative.
+% 
+%   Syntax
+%     mustBeNegative(A)
+% 
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
             if any(A.IsZero | ~A.IsNegative,"all")
                 errorID = "integerFactors:mustBeNegative";
                 message = "Value must be negative.";
@@ -229,6 +303,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 end
 %% VALIDATION FUNCTIONS
 function mustBeValidFactorsProperty(prop)
+% Check 
     try
         mustBeA(prop,"cell")
         for elementIndex = 1:numel(prop)
