@@ -1,4 +1,9 @@
 classdef integerFactors < matlab.mixin.indexing.RedefinesParen
+% FACTORS.INTEGERFACTORS - Integer prime factorization class
+%   This class automatically stores the prime factorization for any
+%   supplied integer with absolute value less than 2^64-1. It can be used
+%   to symbolically handle any numeric operations on the stored integers, 
+
     properties (SetAccess=private)
         IsZero          {mustBeA(IsZero,"logical")}         = true
         IsNegative      {mustBeA(IsNegative,"logical")}     = false
@@ -174,7 +179,7 @@ function mustBeValidFactorsProperty(prop)
         end
     catch
         errorID = "integerFactors:mustBeValidFactorsProperty";
-        message = "Factors property must be a cell array of uint64 row vectors.";
+        message = "Factors property must be a cell array of row vectors of type 'uint64'.";
         throwAsCaller(MException(errorID,message))
     end
 end
@@ -187,7 +192,7 @@ function mustBeValidExponentsProperty(prop)
         end
     catch
         errorID = "integerFactors:mustBeValidExponentsProperty";
-        message = "Exponents property must be a cell arr of uint8 row vectors.";
+        message = "Exponents property must be a cell array of row vectors of type 'uint8'.";
         throwAsCaller(MException(errorID,message))
     end
 end

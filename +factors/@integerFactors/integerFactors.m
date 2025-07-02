@@ -1,4 +1,11 @@
 classdef integerFactors < matlab.mixin.indexing.RedefinesParen
+% FACTORS.INTEGERFACTORS - Integer prime factorization class
+%   This class automatically stores the prime factorization for any
+%   supplied integer array with absolute values less than 2^64-1. It can be
+%   used to symbolically handle any numeric operations on the stored
+%   integers, including unary positive and negative, absolute value,
+%   addition and subtraction, multiplication, and exponentiation.
+
     properties (SetAccess=private)
         IsZero          {mustBeA(IsZero,"logical")}         = true
         IsNegative      {mustBeA(IsNegative,"logical")}     = false
