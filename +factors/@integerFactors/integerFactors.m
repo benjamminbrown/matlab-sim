@@ -136,169 +136,18 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-% EMPTY - Create empty factors.integerFactors array
-%   This function creates an empty factors.integerFactors array.
-% 
-%   Syntax
-%     X = factors.integerFactors.empty
-%     X = factors.integerFactors.empty(0)
-%     X = factors.integerFactors.empty(sz1,...,szN)
-%     X = factors.integerFactors.empty(sz)
-% 
-%   Input Arguments
-%     0 - Dimension of empty square matrix
-%       zero scalar
-%     sz1,...,szN - Dimensions of array
-%       nonnegative integer scalars
-%     sz - Vector of dimensions of array
-%       nonnegative integer row vector
-% 
-%   See also isempty, size, length
-            obj = factors.integerFactors(uint8.empty(varargin{:}));
-        end
-        function obj = zeros(varargin)
-% ZEROS - Create factors.integerFactors array of all zeros
-%   This function creates a factors.integerFactors array of all zeros.
-% 
-%   Syntax
-%     X = ZEROS
-%     X = ZEROS(n)
-%     X = ZEROS(sz1,...,szN)
-%     X = ZEROS(sz)
-%
-%   Input Arguments
-%     n - Dimension of square matrix
-%       nonnegative integer scalar
-%     sz1,...,szN - Dimensions of array
-%       nonnegative integer scalars
-%     sz - Vector of dimensions of array
-%       nonnegative integer row vector
-% 
-%   See also ones, size
-            obj = factors.integerFactors(zeros(varargin{:},"uint8"));
-        end
-        function obj = ones(varargin)
-% ONES - Create factors.integerFactors array of all ones
-%   This function creates a factors.integerFactors array of all ones.
-% 
-%   Syntax
-%     X = ONES
-%     X = ONES(n)
-%     X = ONES(sz1,...,szN)
-%     X = ONES(sz)
-%
-%   Input Arguments
-%     n - Dimension of square matrix
-%       nonnegative integer scalar
-%     sz1,...,szN - Dimensions of array
-%       nonnegative integer scalars
-%     sz - Vector of dimensions of array
-%       nonnegative integer row vector
-% 
-%   See also zeros, size
-            obj = factors.integerFactors(ones(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = zeros(varargin)
+        obj = ones(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(A)
-% MUSTBEPOSITIVE - Validate that value is positive
-%   This function throws an error if any value in the
-%   factors.integerFactors array is not positive.
-% 
-%   Syntax
-%     mustBePositive(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-            if any(A.IsZero | A.IsNegative,"all")
-                errorID = "integerFactors:mustBePositive";
-                message = "Value must be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonpositive(A)
-% MUSTBENONPOSITIVE - Validate that value is nonpositive
-%   This function throws an error if any value in the
-%   factors.integerFactors array is positive.
-% 
-%   Syntax
-%     mustBeNonpositive(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-            if any(~A.IsZero & ~A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNonpositive";
-                message = "Value must not be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonnegative(A)
-% MUSTBENONNEGATIVE - Validate that value is nonnegative
-%   This function throws an error if any value in the
-%   factors.integerFactors array is negative.
-% 
-%   Syntax
-%     mustBeNonnegative(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-            if any(~A.IsZero & A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNonnegative";
-                message = "Value must be nonnegative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNegative(A)
-% MUSTBENEGATIVE - Validate that value is negative
-%   This function throws an error if any value in the
-%   factors.integerFactors array is not negative.
-% 
-%   Syntax
-%     mustBeNegative(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-            if any(A.IsZero | ~A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNegative";
-                message = "Value must be negative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonzero(A)
-% MUSTBENONZERO - Validate that value is nonzero
-%   This function throws an error if any value in the
-%   factors.integerFactors array is zero.
-% 
-%   Syntax
-%     mustBeNonzero(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-            if any(A.IsZero,"all")
-                errorID = "integerFactors:mustBeNonzero";
-                message = "Value must not be zero.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeInteger(~)
-% MUSTBEINTEGER - Validate that value is integer
-%   This function never throws an error, because all values in a
-%   factors.integerFactors array must be integers.
-% 
-%   Syntax
-%     mustBeInteger(A)
-% 
-%   Input Arguments
-%     A - Input array
-%       scalar | vector | matrix | multidimensional array
-        end
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(~)
     end
 end
 %% VALIDATION FUNCTIONS
