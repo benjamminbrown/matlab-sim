@@ -5,12 +5,20 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %   used to symbolically handle any numeric operations on the stored
 %   integers, including unary positive and negative, absolute value,
 %   addition and subtraction, multiplication, and exponentiation.
+% 
+%   Creation
+%     Syntax
+%       obj = factors.integerFactors(I)
+% 
+%     Input Arguments
+%       I - Input array
+%         scalar | vector | matrix | multidimensional array
 
     properties (SetAccess=private)
-        IsZero          {mustBeA(IsZero,"logical")}         = true
-        IsNegative      {mustBeA(IsNegative,"logical")}     = false
-        Factors         {mustBeValidFactorsProperty}        = {uint64.empty(1,0)}
-        Exponents       {mustBeValidExponentsProperty}      = {uint8.empty(1,0)}
+        IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether the integer is equal to zero.
+        IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether the integer is negative.
+        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of the integer prime factors.
+        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of the integer prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
