@@ -17,8 +17,8 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     properties (SetAccess=private)
         IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether the integer is equal to zero.
         IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether the integer is negative.
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of the integer prime factors.
-        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of the integer prime factor exponents (multiplicity).
+        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of prime factors.
+        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
@@ -38,27 +38,34 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
                     elseif isa(varargin{1},"factors.rationalFactors")
                         % Copy Numerator property of object array
                         obj = varargin{1}.Numerator;
+                        % Account for sign of Numerator and Denominator
                         obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
                     else
-                        % Compute prime factor decomposition
+                        % Initialize the object array
                         obj = repmat(obj,size(varargin{1}));
-                        for elementIndex = 1:numel(varargin{1})
-                            if varargin{1}(elementIndex)==0
-                                if 1/varargin{1}(elementIndex)==-inf
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                            else
-                                obj.IsZero(elementIndex) = false;
-                                if varargin{1}(elementIndex)<0
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                                if abs(varargin{1}(elementIndex))~=1
-                                    factors = factor(uint64(abs(varargin{1}(elementIndex))));
-                                    obj.Factors{elementIndex} = unique(factors);
-                                    numberOfFactors = length(obj.Factors{elementIndex});
-                                    obj.Exponents{elementIndex} = zeros(1,numberOfFactors,"uint8");
+                        isZero = varargin{1}==0;
+                        if any(isZero,"all")
+                            % Account for any -0 integers
+                            obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
+                        end
+                        isNonzero = ~isZero;
+                        if any(isNonzero,"all")
+                            % Account for any nonzero integers
+                            obj.IsZero(isNonzero) = false;
+                            obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
+                            isNontrivial = abs(varargin{1}(isNonzero))~=1;
+                            if any(isNontrivial,"all")
+                                % Account for any nontrivial integers
+                                objIndices = find(isNonzero);
+                                objIndices = objIndices(isNontrivial);
+                                for elementIndex = 1:numel(objIndices)
+                                    % Decompose into prime factors
+                                    factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
+                                    obj.Factors{objIndices(elementIndex)} = unique(factors);
+                                    numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
+                                    obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
                                     for factorIndex = 1:numberOfFactors
-                                        obj.Exponents{elementIndex}(factorIndex) = sum(factors==obj.Factors{elementIndex}(factorIndex));
+                                        obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
                                     end
                                 end
                             end
