@@ -79,7 +79,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             end
         end
     end
-    %% PRIVATE METHODS
+    %% PROTECTED METHODS
     methods (Access=protected)
         varargout = parenReference(obj,indexOp)
         obj = parenAssign(obj,indexOp,arg)
