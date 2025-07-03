@@ -1,7 +1,8 @@
 function X = round(X)
 % ROUND - Round to nearest integer
 %   This function rounds each element of the input array to the nearest
-%   integer.
+%   integer. This overloaded function will always return the same
+%   factors.integerFactors array.
 %
 %   Syntax
 %     Y = ROUND(X)
