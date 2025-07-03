@@ -1,4 +1,3 @@
-function Y = uminus(X)
-    Y = X;
-    Y.IsNegative = ~X.IsNegative;
+function X = uminus(X)
+    X.IsNegative = ~X.IsNegative;
 end

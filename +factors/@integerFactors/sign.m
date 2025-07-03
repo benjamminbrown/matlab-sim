@@ -1,5 +1,4 @@
-function Y = sign(X)
-    Y = factors.integerFactors.zeros(size(X));
-    Y.IsZero(~X.IsZero) = false;
-    Y.IsNegative(X.IsNegative) = true;
+function X = sign(X)
+    X.Factors(:) = {uint64.empty(1,0)};
+    X.Exponents(:) = {uint8.empty(1,0)};
 end
