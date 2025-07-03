@@ -19,7 +19,9 @@ function obj = cat(dim,varargin)
     arguments (Repeating)
         varargin    factors.integerFactors
     end
+    % Initialize the output array
     obj = varargin{1};
+    % Concatenate each of the properties
     isZeroArgs = cellfun(@(A) A.IsZero,varargin(2:nargin-1),"UniformOutput",false);
     obj.IsZero = cat(dim,obj.IsZero,isZeroArgs{:});
     isNegativeArgs = cellfun(@(A) A.IsNegative,varargin(2:nargin-1),"UniformOutput",false);
