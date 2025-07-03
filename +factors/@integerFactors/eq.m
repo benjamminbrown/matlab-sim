@@ -1,4 +1,19 @@
 function TF = eq(A,B)
+% EQ - Determine equality
+%   This function returns a logical array indicating where the input arrays
+%   are equal to each other.
+%
+%   Syntax
+%     A == B
+%     EQ(A,B)
+%
+%   Input Arguments
+%     A - Operands
+%       scalars | vectors | matrices | multidimensional arrays
+%     B - Operands
+%       scalars | vectors | matrices | multidimensional arrays
+%
+%   See also ge, gt, le, lt, ne
     [A,B] = utility.implicitArrayExpansion(A,B);
     if isempty(A)
         TF = logical.empty(size(A));

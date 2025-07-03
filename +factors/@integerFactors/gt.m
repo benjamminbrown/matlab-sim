@@ -1,4 +1,19 @@
 function TF = gt(A,B)
+% GT - Determine greater than
+%   This function returns a logical array indicating where the first input
+%   array is greater than the second input array.
+%
+%   Syntax
+%     A > B
+%     GT(A,B)
+%
+%   Input Arguments
+%     A - Operands
+%       scalars | vectors | matrices | multidimensional arrays
+%     B - Operands
+%       scalars | vectors | matrices | multidimensional arrays
+%
+%   See also eq, ge, le, lt, ne
     [A,B] = utility.implicitArrayExpansion(A,B);
     if isempty(A)
         TF = logical.empty(size(A));
