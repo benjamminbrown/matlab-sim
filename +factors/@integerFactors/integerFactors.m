@@ -114,6 +114,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         B = mod(A,M)
         C = power(A,B)
         C = mpower(A,B)
+        Zc = conj(Z)
         varargout = commonFactors(A,B)
         B = cast(A,varargin)
         B = double(A)
