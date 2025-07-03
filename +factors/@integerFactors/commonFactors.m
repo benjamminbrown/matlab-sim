@@ -27,6 +27,7 @@ function varargout = commonFactors(A,B)
         A   factors.integerFactors
         B   factors.integerFactors
     end
+    % Perform output argument validation
     try
         nargoutchk(0,3)
         message = "Number of output arguments must be one or three.";
@@ -35,29 +36,37 @@ function varargout = commonFactors(A,B)
         errorID = "integerFactors:validation:nargoutchk";
         error(errorID,ME.message)
     end
+    % Implicitly expand singleton dimensions of input arrays
     [A,B] = utility.implicitArrayExpansion(A,B);
     if isempty(A)
+        % Return empty arrays
         [varargout{1:nargout}] = deal(factors.integerFactors.empty(size(A)));
     else
+        % Search for any common factors
         R = factors.integerFactors.ones(size(A));
         Ar = A;
         Br = B;
+        % Nontrivial calculation will be required if A and B are nonzero
         isNontrivial = ~(A.IsZero | B.IsZero);
         if any(isNontrivial,"all")
             indices = find(isNontrivial);
             for elementIndex = 1:numel(indices)
                 index = indices(elementIndex);
                 if A.IsNegative(index) && B.IsNegative(index)
+                    % Common factor is negative
                     R.IsNegative(index) = true;
                     Ar.IsNegative(index) = false;
                     Br.IsNegative(index) = false;
                 end
+                % Find matching prime factors
                 commonFactors = Ar.Factors{index}(ismember(Ar.Factors{index},Br.Factors{index}));
                 if ~isempty(commonFactors)
+                    % Common prime factors found
                     R.Factors{index} = commonFactors;
                     numberOfFactors = length(R.Factors{index});
                     R.Exponents{index} = zeros([1,numberOfFactors],"uint8");
                     for factorIndexR = 1:numberOfFactors
+                        % Calculate common factor exponent (multiplicity)
                         factorIndexAr = find(Ar.Factors{index}==R.Factors{index}(factorIndexR));
                         factorIndexBr = find(Br.Factors{index}==R.Factors{index}(factorIndexR));
                         if Ar.Exponents{index}(factorIndexAr)==Br.Exponents{index}(factorIndexBr)
@@ -81,6 +90,7 @@ function varargout = commonFactors(A,B)
                 end
             end
         end
+        % Return results of common factor extraction
         if nargout<=1
             [varargout{1:nargout}] = R;
         else
