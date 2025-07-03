@@ -13,6 +13,8 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %     Input Arguments
 %       I - Input array
 %         scalar | vector | matrix | multidimensional array
+%
+%   See also cast, factors.rationalFactors, factors.scaleFactors
     properties (SetAccess=private)
         IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether an integer is equal to zero.
         IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether an integer is negative.
