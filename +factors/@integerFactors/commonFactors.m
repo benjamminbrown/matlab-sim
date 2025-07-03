@@ -3,6 +3,14 @@ function varargout = commonFactors(A,B)
         A   factors.integerFactors
         B   factors.integerFactors
     end
+    try
+        nargoutchk(0,3)
+        message = "Number of output arguments must be one or three.";
+        assert(nargout~=2,message)
+    catch ME
+        errorID = "integerFactors:validation:nargoutchk";
+        error(errorID,ME.message)
+    end
     [A,B] = utility.implicitArrayExpansion(A,B);
     if isempty(A)
         [varargout{1:nargout}] = deal(factors.integerFactors.empty(size(A)));
@@ -49,17 +57,12 @@ function varargout = commonFactors(A,B)
                 end
             end
         end
-        switch nargout
-            case {0,1}
-                [varargout{1:nargout}] = R;
-            case 3
-                varargout{1} = R;
-                varargout{2} = Ar;
-                varargout{3} = Br;
-            otherwise
-                errorID = "integerFactors:commonFactors:outputArgumentMismatch";
-                message = "Number of output arguments must be one or three.";
-                error(errorID,message)
+        if nargout<=1
+            [varargout{1:nargout}] = R;
+        else
+            varargout{1} = R;
+            varargout{2} = Ar;
+            varargout{3} = Br;
         end
     end
 end
