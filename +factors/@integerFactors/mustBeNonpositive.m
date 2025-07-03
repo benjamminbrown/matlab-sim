@@ -10,7 +10,7 @@ function mustBeNonpositive(A)
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
     if any(~A.IsZero & ~A.IsNegative,"all")
-        errorID = "integerFactors:mustBeNonpositive";
+        errorID = "integerFactors:validation:mustBeNonpositive";
         message = "Value must not be positive.";
         throwAsCaller(MException(errorID,message))
     end

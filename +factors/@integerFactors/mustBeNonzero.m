@@ -10,7 +10,7 @@ function mustBeNonzero(A)
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
     if any(A.IsZero,"all")
-        errorID = "integerFactors:mustBeNonzero";
+        errorID = "integerFactors:validation:mustBeNonzero";
         message = "Value must not be zero.";
         throwAsCaller(MException(errorID,message))
     end
