@@ -25,57 +25,47 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
             arguments (Repeating)
                 varargin    {mustBeNumericOrLogical,mustBeInteger}
             end
-            switch nargin
-                case 0
-                    errorID = "integerFactors:notEnoughInputArguments";
-                    message = "Not enough input arguments.";
-                    error(errorID,message)
-                case 1
-                    if isa(varargin{1},"factors.integerFactors")
-                        % Copy object array
-                        obj = varargin{1};
-                    elseif isa(varargin{1},"factors.rationalFactors")
-                        % Copy the numerator property of object array
-                        obj = varargin{1}.Numerator;
-                        % Account for the numerator and denominator signs
-                        obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
-                    else
-                        % Initialize the object array
-                        obj = repmat(obj,size(varargin{1}));
-                        if ~isempty(obj)
-                            isZero = varargin{1}==0;
-                            if any(isZero,"all")
-                                % Account for any -0 integers
-                                obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
-                            end
-                            isNonzero = ~isZero;
-                            if any(isNonzero,"all")
-                                % Account for any nonzero integers
-                                obj.IsZero(isNonzero) = false;
-                                obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
-                                isNontrivial = abs(varargin{1}(isNonzero))~=1;
-                                if any(isNontrivial,"all")
-                                    % Account for any nontrivial integers
-                                    objIndices = find(isNonzero);
-                                    objIndices = objIndices(isNontrivial);
-                                    for elementIndex = 1:numel(objIndices)
-                                        % Decompose into prime factors
-                                        factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
-                                        obj.Factors{objIndices(elementIndex)} = unique(factors);
-                                        numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
-                                        obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
-                                        for factorIndex = 1:numberOfFactors
-                                            obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
-                                        end
-                                    end
+            narginchk(1,1)
+            if isa(varargin{1},"factors.integerFactors")
+                % Copy object array
+                obj = varargin{1};
+            elseif isa(varargin{1},"factors.rationalFactors")
+                % Copy the numerator property of object array
+                obj = varargin{1}.Numerator;
+                % Account for the numerator and denominator signs
+                obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
+            else
+                % Initialize the object array
+                obj = repmat(obj,size(varargin{1}));
+                if ~isempty(obj)
+                    isZero = varargin{1}==0;
+                    if any(isZero,"all")
+                        % Account for any -0 integers
+                        obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
+                    end
+                    isNonzero = ~isZero;
+                    if any(isNonzero,"all")
+                        % Account for any nonzero integers
+                        obj.IsZero(isNonzero) = false;
+                        obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
+                        isNontrivial = abs(varargin{1}(isNonzero))~=1;
+                        if any(isNontrivial,"all")
+                            % Account for any nontrivial integers
+                            objIndices = find(isNonzero);
+                            objIndices = objIndices(isNontrivial);
+                            for elementIndex = 1:numel(objIndices)
+                                % Decompose into prime factors
+                                factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
+                                obj.Factors{objIndices(elementIndex)} = unique(factors);
+                                numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
+                                obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
+                                for factorIndex = 1:numberOfFactors
+                                    obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
                                 end
                             end
                         end
                     end
-                otherwise
-                    errorID = "integerFactors:tooManyInputArguments";
-                    message = "Too many input arguments.";
-                    error(errorID,message)
+                end
             end
         end
     end
@@ -122,7 +112,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         C = power(A,B)
         C = mpower(A,B)
         varargout = commonFactors(A,B)
-        B = cast(A,newclass)
+        B = cast(A,varargin)
         B = double(A)
         B = single(A)
         B = int8(A)
@@ -150,7 +140,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         mustBeInteger(~)
     end
 end
-%% VALIDATION FUNCTIONS
+%% PROPERTY VALIDATION FUNCTIONS
 function mustBeValidFactorsProperty(prop)
     try
         % Check that property is a cell array
