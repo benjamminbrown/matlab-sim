@@ -1,7 +1,6 @@
-function B = reshape(A,varargin)
-    B = A;
-    B.IsZero = reshape(A.IsZero,varargin{:});
-    B.IsNegative = reshape(A.IsNegative,varargin{:});
-    B.Factors = reshape(A.Factors,varargin{:});
-    B.Exponents = reshape(A.Exponents,varargin{:});
+function A = reshape(A,varargin)
+    A.IsZero = reshape(A.IsZero,varargin{:});
+    A.IsNegative = reshape(A.IsNegative,varargin{:});
+    A.Factors = reshape(A.Factors,varargin{:});
+    A.Exponents = reshape(A.Exponents,varargin{:});
 end

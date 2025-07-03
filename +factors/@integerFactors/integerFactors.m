@@ -84,6 +84,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         obj = cat(dim,varargin)
         B = permute(A,dimorder)
         B = transpose(A)
+        B = ctranspose(A)
         B = reshape(A,varargin)
         TF = isfinite(A)
         TF = isinf(A)
