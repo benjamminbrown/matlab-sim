@@ -20,7 +20,12 @@ function B = cast(A,varargin)
 %   See also class
 
     % Perform input argument validation
-    narginchk(2,3)
+    try
+        narginchk(2,3)
+    catch ME
+        errorID = "integerFactors:validation:narginchk";
+        error(errorID,ME.message)
+    end
     try
         mustBeTextScalar(varargin{1})
     catch ME
@@ -32,7 +37,7 @@ function B = cast(A,varargin)
         newclass = varargin{1};
     else
         if ~strcmp(varargin{1},"like")
-            errorID = "integerFactors:cast:invalidString";
+            errorID = "integerFactors:validation:invalidNameValueString";
             message = "With three input arguments, the second argument must be 'like'.";
             error(errorID,message)
         end
