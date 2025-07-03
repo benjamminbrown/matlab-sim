@@ -1,4 +1,4 @@
-function Y = abs(X)
+function X = abs(X)
 % ABS - Absolute value
 %   This function returns the absolute value of each element in the input
 %   array.
@@ -11,6 +11,5 @@ function Y = abs(X)
 %       scalar | vector | matrix | multidimensional array
 %
 %   See also sign
-    Y = X;
-    Y.IsNegative(:) = false;
+    X.IsNegative(:) = false;
 end
