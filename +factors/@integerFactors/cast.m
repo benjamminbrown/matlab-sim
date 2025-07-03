@@ -79,20 +79,22 @@ function B = cast(A,varargin)
     if any(isNonzero,"all")
         arrayIndices = find(~A.IsZero(:));
         for elementIndex = 1:numel(arrayIndices)
-            % Check for lossless conversion to type "uint64"
-            fixedQuotient = intmax("uint64");
-            for factorIndex = length(A.Factors{arrayIndices(elementIndex)}):-1:1
-                factor = uint64(A.Factors{arrayIndices(elementIndex)}(factorIndex));
-                for count = 1:A.Exponents{arrayIndices(elementIndex)}(factorIndex)
-                    fixedQuotient = idivide(fixedQuotient,factor);
-                    if fixedQuotient==0
-                        errorID = "integerFactors:cast:exceedsIntMax";
-                        message = "Product of factors exceeds the largest value of type uint64. See INTMAX.";
-                        error(errorID,message)
+            if ~isempty(A.Factors{arrayIndices(elementIndex)})
+                % Check for lossless conversion to type "uint64"
+                fixedQuotient = intmax("uint64");
+                for factorIndex = length(A.Factors{arrayIndices(elementIndex)}):-1:1
+                    factor = uint64(A.Factors{arrayIndices(elementIndex)}(factorIndex));
+                    for count = 1:A.Exponents{arrayIndices(elementIndex)}(factorIndex)
+                        fixedQuotient = idivide(fixedQuotient,factor);
+                        if fixedQuotient==0
+                            errorID = "integerFactors:cast:exceedsIntMax";
+                            message = "Product of factors exceeds the largest value of type uint64. See INTMAX.";
+                            error(errorID,message)
+                        end
                     end
                 end
             end
-            % Perform conversion to type "uint64"
+            % Perform conversion of absolute value to type "uint64"
             absInteger = prod(uint64(A.Factors{arrayIndices(elementIndex)}).^uint64(A.Exponents{arrayIndices(elementIndex)}));
             % Check for lossless conversion to requested type
             if absInteger>maxInteger
