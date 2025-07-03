@@ -1,4 +1,28 @@
 function varargout = commonFactors(A,B)
+% COMMONFACTORS - Extract common factors
+%   This function returns an array of the common factors between the two
+%   input factors.integerFactors arrays. Additionally, it can return the
+%   reduced forms of the input arrays with the common factors removed.
+%
+%   Syntax
+%     R = commonFactors(A,B)
+%     [R,Ar,Br] = commonFactors(A,B)
+%
+%   Input Arguments
+%     A - First input array
+%       scalar | vector | matrix | multidimensional array
+%     B - Second input array
+%       scalar | vector | matrix | multidimensional array
+%
+%   Output Arguments
+%     R - Array of common factors
+%       scalar | vector | matrix | multidimensional array
+%     Ar - Reduced form of the first input array
+%       scalar | vector | matrix | multidimensional array
+%     Br - Reduced form of the second input array
+%       scalar | vector | matrix | multidimensional array
+%
+%   See also factor
     arguments (Input)
         A   factors.integerFactors
         B   factors.integerFactors
