@@ -14,24 +14,31 @@ function TF = eq(A,B)
 %       scalars | vectors | matrices | multidimensional arrays
 %
 %   See also ge, gt, le, lt, ne
+
+    % Implicitly expand singleton dimensions of input arrays
     [A,B] = utility.implicitArrayExpansion(A,B);
     if isempty(A)
+        % Return empty array
         TF = logical.empty(size(A));
     else
+        % Nontrivial calculation will be required if A and B are finite
         TF = isfinite(A) & isfinite(B);
         if any(TF,"all")
             if ~isa(A,"factors.integerFactors")
+                % Cast nontrivial elements as factors.integerFactors
                 nontrivialA = factors.integerFactors(A(TF));
             else
                 nontrivialA = A(TF);
             end
             if ~isa(B,"factors.integerFactors")
+                % Cast nontrivial elements as factors.integerFactors
                 nontrivialB = factors.integerFactors(B(TF));
             else
                 nontrivialB = B(TF);
             end
             TFIndices = find(TF(:));
             for elementIndex = 1:numel(nontrivialA)
+                % Check elements for equality
                 TF(TFIndices(elementIndex)) = (nontrivialA.IsZero(elementIndex) && nontrivialB.IsZero(elementIndex)) || ...
                                               nontrivialA.IsZero(elementIndex)==nontrivialB.IsZero(elementIndex) && ...
                                               nontrivialA.IsNegative(elementIndex)==nontrivialB.IsNegative(elementIndex) && ...
