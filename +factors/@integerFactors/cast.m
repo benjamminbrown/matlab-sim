@@ -1,4 +1,24 @@
 function B = cast(A,varargin)
+% CAST - Convert variable to different data type
+%   This function returns the integers in the factors.integerFactors array
+%   converted to the data type (class) newclass, where newclass is the name
+%   of a built-in data type compatible with A.
+%
+%   Syntax
+%     B = cast(A,newclass)
+%     B = cast(A,"like",p)
+%
+%   Input Arguments
+%     A - Input array
+%       scalar | vector | matrix | multidimensional array
+%     newclass - New class
+%       "single" | "double" | "int8" | "int16" | "int32" | "int64" |
+%       "uint8" | "uint16" | "uint32" | "uint64"
+%     p - Prototype
+%       scalar | vector | matrix | multidimensional array
+%
+%   See also class
+
     % Perform input argument validation
     narginchk(2,3)
     try
