@@ -42,7 +42,7 @@ function varargout = commonFactors(A,B)
         % Return empty arrays
         [varargout{1:nargout}] = deal(factors.integerFactors.empty(size(A)));
     else
-        % Search for any common factors
+        % Extract any common factors
         R = factors.integerFactors.ones(size(A));
         Ar = A;
         Br = B;
