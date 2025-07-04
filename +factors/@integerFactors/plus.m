@@ -1,5 +1,5 @@
 function C = plus(A,B)
-% PLUS - Add numbers, append strings
+% PLUS - Add numbers
 %   This function adds the corresponding elements of the input arrays.
 %
 %   Syntax
