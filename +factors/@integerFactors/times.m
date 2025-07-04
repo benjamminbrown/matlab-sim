@@ -1,11 +1,11 @@
 function C = times(A,B)
-% times - Multiplication
+% TIMES - Multiplication
 %   This function multiplies the corresponding elements of the input
 %   arrays.
 %
 %   Syntax
 %     C = A.*B
-%     C = times(A,B)
+%     C = TIMES(A,B)
 %
 %   Input Arguments
 %     A - Operands
