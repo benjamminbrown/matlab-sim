@@ -1,8 +1,7 @@
 function B = cast(A,varargin)
 % CAST - Convert variable to different data type
 %   This function returns the integers in the factors.integerFactors array
-%   converted to the data type (class) newclass, where newclass is the name
-%   of a built-in data type compatible with A.
+%   converted to the specified data type (class).
 %
 %   Syntax
 %     B = cast(A,newclass)
