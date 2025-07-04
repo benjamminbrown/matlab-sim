@@ -1,9 +1,9 @@
 function A = uminus(A)
 % UMINUS - Unary minus
-%   This function negates the elements of A and stores the result in C.
+%   This function returns the input array with its elements negated.
 %
 %   Syntax
-%     C = +A
+%     C = -A
 %     C = UMINUS(A)
 %
 %   Input Arguments

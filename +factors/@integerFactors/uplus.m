@@ -1,6 +1,6 @@
 function A = uplus(A)
 % UPLUS - Unary plus
-%   This function returns array A and stores it in C.
+%   This function returns the input array.
 %
 %   Syntax
 %     C = +A
