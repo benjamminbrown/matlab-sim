@@ -109,6 +109,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         C = plus(A,B)
         C = minus(A,B)
         C = times(A,B)
+        C = mtimes(A,B)
         C = rdivide(A,B)
         C = ldivide(A,B)
         R = rem(A,B)
