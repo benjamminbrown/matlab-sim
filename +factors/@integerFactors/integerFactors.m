@@ -16,10 +16,10 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %
 %   See also cast, factors.rationalFactors, factors.scaleFactors
     properties (SetAccess=private)
-        IsZero      {mustBeA(IsZero,"logical")}     = true                  % Logical value indicating whether an integer is equal to zero.
-        IsNegative  {mustBeA(IsNegative,"logical")} = false                 % Logical value indicating whether an integer is negative.
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)}   % Row vector of an integer's prime factors.
-        Exponents   {mustBeValidExponentsProperty}  = {uint8.empty(1,0)}    % Row vector of an integer's prime factor exponents (multiplicity).
+        IsZero      logical = true                  % Logical value indicating whether an integer is equal to zero.
+        IsNegative  logical = false                 % Logical value indicating whether an integer is negative.
+        Factors     cell    = {uint64.empty(1,0)}   % Row vector of an integer's prime factors.
+        Exponents   cell    = {uint8.empty(1,0)}    % Row vector of an integer's prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
@@ -145,36 +145,5 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         mustBeNegative(A)
         mustBeNonzero(A)
         mustBeInteger(~)
-    end
-end
-%% PROPERTY VALIDATION FUNCTIONS
-function mustBeValidFactorsProperty(prop)
-    try
-        % Check that property is a cell array
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            % Check that each element is a row vector of type "uint64"
-            mustBeA(prop{elementIndex},"uint64")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "integerFactors:mustBeValidFactorsProperty";
-        message = "Factors property must be a cell array of row vectors of type 'uint64'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
-function mustBeValidExponentsProperty(prop)
-    try
-        % Check that property is a cell array
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            % Check that each element is a row vector of type "uint8"
-            mustBeA(prop{elementIndex},"uint8")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "integerFactors:mustBeValidExponentsProperty";
-        message = "Exponents property must be a cell array of row vectors of type 'uint8'.";
-        throwAsCaller(MException(errorID,message))
     end
 end
