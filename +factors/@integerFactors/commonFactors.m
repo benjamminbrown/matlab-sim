@@ -46,17 +46,15 @@ function varargout = commonFactors(A,B)
         R = factors.integerFactors.ones(size(A));
         Ar = A;
         Br = B;
+        % Common factor is negative when both A and B are negative
+        R.IsNegative = A.IsNegative & B.IsNegative;
+        Ar.IsNegative(R.IsNegative) = false;
+        Br.IsNegative(R.IsNegative) = false;
         % Nontrivial calculation will be required if A and B are nonzero
         isNontrivial = ~(A.IsZero | B.IsZero);
         if any(isNontrivial,"all")
             elementIndices = find(isNontrivial);
             for elementIndex = elementIndices(:).'
-                if A.IsNegative(elementIndex) && B.IsNegative(elementIndex)
-                    % Common factor is negative
-                    R.IsNegative(elementIndex) = true;
-                    Ar.IsNegative(elementIndex) = false;
-                    Br.IsNegative(elementIndex) = false;
-                end
                 % Find matching prime factors
                 commonFactors = Ar.Factors{elementIndex}(ismember(Ar.Factors{elementIndex},Br.Factors{elementIndex}));
                 if ~isempty(commonFactors)
