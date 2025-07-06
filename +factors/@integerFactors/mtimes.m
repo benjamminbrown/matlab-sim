@@ -21,8 +21,8 @@ function C = mtimes(A,B)
     end
     if ~(isscalar(A) || isscalar(B))
         % Throw error if neither input is a scalar
-        errorID = "integerFactors:mtimes:matrixMultiplicationNotImplemented";
-        message = "Matrix multiplication has not been implemented for arrays of type 'factors.integerFactors'.";
+        errorID = "integerFactors:mtimes:matrixMultiplicationNotSupported";
+        message = "The matrix times method is not supported for two nonscalar objects of type 'factors.integerFactors'.";
         error(errorID,message)
     else
         % Pass inputs to times method
