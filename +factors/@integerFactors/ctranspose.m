@@ -1,7 +1,8 @@
 function A = ctranspose(A)
 % CTRANSPOSE - Transpose vector or matrix
 %   This function returns the complex conjugate transpose of the input
-%   array.
+%   array. Since all factors.integerFactors arrays are strictly real, this
+%   function returns simply the transpose of the input array.
 %
 %   Syntax
 %     B = A'

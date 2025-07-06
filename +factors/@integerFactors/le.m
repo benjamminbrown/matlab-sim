@@ -8,10 +8,10 @@ function TF = le(A,B)
 %     LE(A,B)
 %
 %   Input Arguments
-%     A - Operands
-%       scalars | vectors | matrices | multidimensional arrays
-%     B - Operands
-%       scalars | vectors | matrices | multidimensional arrays
+%     A - Left operand
+%       scalar | vector | matrix | multidimensional array
+%     B - Right operand
+%       scalar | vector | matrix | multidimensional array
 %
 %   See also eq, ge, gt, lt, ne
     TF = A<B | A==B;

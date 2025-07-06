@@ -9,17 +9,17 @@ function varargout = commonFactors(A,B)
 %     [R,Ar,Br] = commonFactors(A,B)
 %
 %   Input Arguments
-%     A - First input array
+%     A - Left operand
 %       scalar | vector | matrix | multidimensional array
-%     B - Second input array
+%     B - Right operand
 %       scalar | vector | matrix | multidimensional array
 %
 %   Output Arguments
 %     R - Array of common factors
 %       scalar | vector | matrix | multidimensional array
-%     Ar - Reduced form of the first input array
+%     Ar - Reduced form of the left operand
 %       scalar | vector | matrix | multidimensional array
-%     Br - Reduced form of the second input array
+%     Br - Reduced form of the right operand
 %       scalar | vector | matrix | multidimensional array
 %
 %   See also factor

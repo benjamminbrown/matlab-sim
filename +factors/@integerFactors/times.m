@@ -8,10 +8,10 @@ function C = times(A,B)
 %     C = TIMES(A,B)
 %
 %   Input Arguments
-%     A - Operands
-%       scalars | vectors | matrices | multidimensional arrays
-%     B - Operands
-%       scalars | vectors | matrices | multidimensional arrays
+%     A - Left operand
+%       scalar | vector | matrix | multidimensional array
+%     B - Right operand
+%       scalar | vector | matrix | multidimensional array
 %
 %   See also mtimes
     arguments
