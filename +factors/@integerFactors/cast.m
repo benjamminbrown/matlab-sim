@@ -99,7 +99,7 @@ function B = cast(A,varargin)
                 end
             end
             % Perform conversion of absolute value to type "uint64"
-            absInteger = prod(uint64(A.Factors{elementIndices(elementIndex)}).^uint64(A.Exponents{elementIndices(elementIndex)}));
+            absInteger = prod(uint64(A.Factors{elementIndex}).^uint64(A.Exponents{elementIndex}));
             % Check for lossless conversion to requested type
             if absInteger>maxInteger
                 if isFloatClassname
@@ -113,10 +113,10 @@ function B = cast(A,varargin)
                 end
             end
             % Assign value to output array
-            if A.IsNegative(elementIndices(elementIndex))
-                B(elementIndices(elementIndex)) = -absInteger;
+            if A.IsNegative(elementIndex)
+                B(elementIndex) = -absInteger;
             else
-                B(elementIndices(elementIndex)) = absInteger;
+                B(elementIndex) = absInteger;
             end
         end
     end
