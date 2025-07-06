@@ -1,62 +1,77 @@
 classdef integerFactors < matlab.mixin.indexing.RedefinesParen
+% FACTORS.INTEGERFACTORS - Integer prime factorization class
+%   This class automatically stores the prime factorization for any
+%   supplied integer array with absolute values less than 2^64-1. It can be
+%   used to symbolically handle any numeric operations on the stored
+%   integers, including unary positive and negative, absolute value,
+%   addition and subtraction, multiplication, and exponentiation.
+% 
+%   Creation
+%     Syntax
+%       obj = factors.integerFactors(I)
+% 
+%     Input Arguments
+%       I - Input array
+%         scalar | vector | matrix | multidimensional array
+%
+%   See also cast, factor, factors.rationalFactors, factors.scaleFactors
     properties (SetAccess=private)
-        IsZero          {mustBeA(IsZero,"logical")}         = true
-        IsNegative      {mustBeA(IsNegative,"logical")}     = false
-        Factors         {mustBeValidFactorsProperty}        = {uint64.empty(1,0)}
-        Exponents       {mustBeValidExponentsProperty}      = {uint8.empty(1,0)}
+        IsZero      logical = true                  % Logical value indicating whether an integer is equal to zero.
+        IsNegative  logical = false                 % Logical value indicating whether an integer is negative.
+        Factors     cell    = {uint64.empty(1,0)}   % Row vector of an integer's prime factors.
+        Exponents   cell    = {uint8.empty(1,0)}    % Row vector of an integer's prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods
         function obj = integerFactors(varargin)
             arguments (Repeating)
-                varargin    {mustBeInteger}
+                varargin    {mustBeNumericOrLogical,mustBeInteger}
             end
-            switch nargin
-                case 0
-                    errorID = "integerFactors:notEnoughInputArguments";
-                    message = "Not enough input arguments.";
-                    error(errorID,message)
-                case 1
-                    if isa(varargin{1},"factors.integerFactors")
-                        % Copy object array
-                        obj = varargin{1};
-                    elseif isa(varargin{1},"factors.rationalFactors")
-                        % Copy Numerator property of object array
-                        obj = varargin{1}.Numerator;
-                        obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
-                    else
-                        % Compute prime factor decomposition
-                        obj = repmat(obj,size(varargin{1}));
-                        for elementIndex = 1:numel(varargin{1})
-                            if varargin{1}(elementIndex)==0
-                                if 1/varargin{1}(elementIndex)==-inf
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                            else
-                                obj.IsZero(elementIndex) = false;
-                                if varargin{1}(elementIndex)<0
-                                    obj.IsNegative(elementIndex) = true;
-                                end
-                                if abs(varargin{1}(elementIndex))~=1
-                                    factors = factor(uint64(abs(varargin{1}(elementIndex))));
-                                    obj.Factors{elementIndex} = unique(factors);
-                                    numberOfFactors = length(obj.Factors{elementIndex});
-                                    obj.Exponents{elementIndex} = zeros(1,numberOfFactors,"uint8");
-                                    for factorIndex = 1:numberOfFactors
-                                        obj.Exponents{elementIndex}(factorIndex) = sum(factors==obj.Factors{elementIndex}(factorIndex));
-                                    end
+            narginchk(1,1)
+            if isa(varargin{1},"factors.integerFactors")
+                % Copy object array
+                obj = varargin{1};
+            elseif isa(varargin{1},"factors.rationalFactors")
+                % Copy the numerator property of object array
+                obj = varargin{1}.Numerator;
+                % Account for the numerator and denominator signs
+                obj.IsNegative = varargin{1}.Numerator.IsNegative~=varargin{1}.Denominator.IsNegative;
+            else
+                % Initialize the object array
+                obj = repmat(obj,size(varargin{1}));
+                if ~isempty(obj)
+                    isZero = varargin{1}==0;
+                    if any(isZero,"all")
+                        % Account for any -0 integers
+                        obj.IsNegative(isZero) = 1./varargin{1}(isZero)==-inf;
+                    end
+                    isNonzero = ~isZero;
+                    if any(isNonzero,"all")
+                        % Account for any nonzero integers
+                        obj.IsZero(isNonzero) = false;
+                        obj.IsNegative(isNonzero) = varargin{1}(isNonzero)<0;
+                        isNontrivial = abs(varargin{1}(isNonzero))~=1;
+                        if any(isNontrivial,"all")
+                            % Account for any nontrivial integers
+                            objIndices = find(isNonzero);
+                            objIndices = objIndices(isNontrivial);
+                            for elementIndex = 1:numel(objIndices)
+                                % Decompose into prime factors
+                                factors = factor(uint64(abs(varargin{1}(objIndices(elementIndex)))));
+                                obj.Factors{objIndices(elementIndex)} = unique(factors);
+                                numberOfFactors = length(obj.Factors{objIndices(elementIndex)});
+                                obj.Exponents{objIndices(elementIndex)} = zeros(1,numberOfFactors,"uint8");
+                                for factorIndex = 1:numberOfFactors
+                                    obj.Exponents{objIndices(elementIndex)}(factorIndex) = sum(factors==obj.Factors{objIndices(elementIndex)}(factorIndex));
                                 end
                             end
                         end
                     end
-                otherwise
-                    errorID = "integerFactors:tooManyInputArguments";
-                    message = "Too many input arguments.";
-                    error(errorID,message)
+                end
             end
         end
     end
-    %% PRIVATE METHODS
+    %% PROTECTED METHODS
     methods (Access=protected)
         varargout = parenReference(obj,indexOp)
         obj = parenAssign(obj,indexOp,arg)
@@ -69,6 +84,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         obj = cat(dim,varargin)
         B = permute(A,dimorder)
         B = transpose(A)
+        B = ctranspose(A)
         B = reshape(A,varargin)
         TF = isfinite(A)
         TF = isinf(A)
@@ -81,25 +97,29 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
         TF = ge(A,B)
         TF = lt(A,B)
         TF = le(A,B)
-        X = floor(X)
-        X = ceil(X)
-        X = fix(X)
-        X = round(X)
-        X = uplus(X)
-        Y = uminus(X)
+        Y = floor(X)
+        Y = ceil(X)
+        Y = fix(X)
+        Y = round(X)
         Y = abs(X)
         Y = sign(X)
+        Zc = conj(Z)
+        C = uplus(A)
+        C = uminus(A)
         C = plus(A,B)
         C = minus(A,B)
         C = times(A,B)
+        C = mtimes(A,B)
         C = rdivide(A,B)
-        C = ldivide(A,B)
-        R = rem(A,B)
-        B = mod(A,M)
+        C = mrdivide(B,A)
+        C = ldivide(B,A)
+        C = mldivide(A,B)
         C = power(A,B)
         C = mpower(A,B)
+        R = rem(A,B)
+        B = mod(A,M)
         varargout = commonFactors(A,B)
-        B = cast(A,newclass)
+        B = cast(A,varargin)
         B = double(A)
         B = single(A)
         B = int8(A)
@@ -113,81 +133,17 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-            obj = factors.integerFactors(uint8.empty(varargin{:}));
-        end
-        function obj = zeros(varargin)
-            obj = factors.integerFactors(zeros(varargin{:},"uint8"));
-        end
-        function obj = ones(varargin)
-            obj = factors.integerFactors(ones(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = zeros(varargin)
+        obj = ones(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(A)
-            if any(A.IsZero | A.IsNegative,"all")
-                errorID = "integerFactors:mustBePositive";
-                message = "Value must be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonpositive(A)
-            if any(~A.IsZero & ~A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNonpositive";
-                message = "Value must not be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonnegative(A)
-            if any(~A.IsZero & A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNonnegative";
-                message = "Value must be nonnegative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNegative(A)
-            if any(A.IsZero | ~A.IsNegative,"all")
-                errorID = "integerFactors:mustBeNegative";
-                message = "Value must be negative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonzero(A)
-            if any(A.IsZero,"all")
-                errorID = "integerFactors:mustBeNonzero";
-                message = "Value must not be zero.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeInteger(~)
-        end
-    end
-end
-%% VALIDATION FUNCTIONS
-function mustBeValidFactorsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"uint64")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "integerFactors:mustBeValidFactorsProperty";
-        message = "Factors property must be a cell array of row vectors of type 'uint64'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
-function mustBeValidExponentsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"uint8")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "integerFactors:mustBeValidExponentsProperty";
-        message = "Exponents property must be a cell array of row vectors of type 'uint8'.";
-        throwAsCaller(MException(errorID,message))
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(~)
     end
 end
