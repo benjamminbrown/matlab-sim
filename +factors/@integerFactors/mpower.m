@@ -16,17 +16,13 @@ function C = mpower(A,B)
 %       scalar | vector | matrix | multidimensional array
 %
 %   See also power
-    arguments
-        A   factors.integerFactors
-        B   factors.integerFactors
-    end
     if ~(isscalar(A) && isscalar(B))
         % Throw error if either input is not a scalar
         errorID = "integerFactors:mpower:matrixPowerNotSupported";
-        message = "The matrix power method is not supported for nonscalar objects of type 'factors.integerFactors'.";
+        message = "The matrix power method is not supported for nonscalar operands of type 'factors.integerFactors'.";
         error(errorID,message)
     else
-        % Pass inputs to power method
+        % Pass operands to power method
         C = power(A,B);
     end
 end

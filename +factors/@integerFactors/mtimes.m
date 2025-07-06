@@ -15,17 +15,13 @@ function C = mtimes(A,B)
 %       scalar | vector | matrix | multidimensional array
 %
 %   See also times
-    arguments
-        A   factors.integerFactors
-        B   factors.integerFactors
-    end
     if ~(isscalar(A) || isscalar(B))
         % Throw error if neither input is a scalar
         errorID = "integerFactors:mtimes:matrixMultiplicationNotSupported";
-        message = "The matrix times method is not supported for two nonscalar objects of type 'factors.integerFactors'.";
+        message = "The matrix times method is not supported for two nonscalar operands of type 'factors.integerFactors'.";
         error(errorID,message)
     else
-        % Pass inputs to times method
+        % Pass operands to times method
         C = times(A,B);
     end
 end
