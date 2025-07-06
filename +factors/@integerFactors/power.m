@@ -12,6 +12,8 @@ function C = power(A,B)
 %       scalar | vector | matrix | multidimensional array
 %     B - Right operand
 %       scalar | vector | matrix | multidimensional array
+%
+%   See also mpower
     arguments
         A   factors.integerFactors
         B   factors.integerFactors
