@@ -54,27 +54,30 @@ function C = plus(A,B)
             error(errorID,message)
         end
         absCr(isAddition) = absAr(isAddition)+absBr(isAddition);
-        % Perform subtraction of absolute values where appropriate
+        % Find where absolute values should be subtracted
         isSubtraction = ~isAddition;
         isGreaterAbsAr = absAr>absBr;
         isSubtractionWithGreaterAbsAr = isSubtraction & isGreaterAbsAr;
         if any(isSubtractionWithGreaterAbsAr)
+            % Subtract absolute value of Br from Ar where appropriate
             absCr(isSubtractionWithGreaterAbsAr) = absAr(isSubtractionWithGreaterAbsAr)-absBr(isSubtractionWithGreaterAbsAr);
         end
         isSubtractionWithGreaterAbsBr = isSubtraction & ~isGreaterAbsAr;
         if any(isSubtractionWithGreaterAbsBr)
+            % Subtract absolute value of Ar from Br where appropriate
             absCr(isSubtractionWithGreaterAbsBr) = absBr(isSubtractionWithGreaterAbsBr)-absAr(isSubtractionWithGreaterAbsBr);
         end
         % Perform prime factorization on the nontrivial results
         Cr(isNontrivial) = factors.integerFactors(absCr);
-        % Negate the signs of the nontrivial results where appropriate
+        % Find where signs of results should be negated
         CrIndices = find(isNontrivial);
         isNegativeCr = (isSubtractionWithGreaterAbsAr & Ar.IsNegative(CrIndices)) | ...
                        (isSubtractionWithGreaterAbsBr & Br.IsNegative(CrIndices));
         if any(isNegativeCr)
+            % Negate signs of results where appropriate
             Cr(CrIndices(isNegativeCr)) = -Cr(CrIndices(isNegativeCr));
         end
     end
-    % Multiply by common factors
+    % Multiply by the extracted common factors for final results
     C = R.*Cr;
 end
