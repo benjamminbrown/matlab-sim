@@ -81,14 +81,14 @@ function B = cast(A,varargin)
     % Check for nonzero elements
     isNonzero = ~A.IsZero;
     if any(isNonzero,"all")
-        arrayIndices = find(~A.IsZero(:));
-        for elementIndex = 1:numel(arrayIndices)
-            if ~isempty(A.Factors{arrayIndices(elementIndex)})
+        elementIndices = find(~A.IsZero(:));
+        for elementIndex = elementIndices(:).'
+            if ~isempty(A.Factors{elementIndex})
                 % Check for lossless conversion to type "uint64"
                 fixedQuotient = intmax("uint64");
-                for factorIndex = length(A.Factors{arrayIndices(elementIndex)}):-1:1
-                    factor = uint64(A.Factors{arrayIndices(elementIndex)}(factorIndex));
-                    for count = 1:A.Exponents{arrayIndices(elementIndex)}(factorIndex)
+                for factorIndex = length(A.Factors{elementIndex}):-1:1
+                    factor = uint64(A.Factors{elementIndex}(factorIndex));
+                    for count = 1:A.Exponents{elementIndex}(factorIndex)
                         fixedQuotient = idivide(fixedQuotient,factor);
                         if fixedQuotient==0
                             errorID = "integerFactors:cast:exceedsIntMax";
@@ -99,7 +99,7 @@ function B = cast(A,varargin)
                 end
             end
             % Perform conversion of absolute value to type "uint64"
-            absInteger = prod(uint64(A.Factors{arrayIndices(elementIndex)}).^uint64(A.Exponents{arrayIndices(elementIndex)}));
+            absInteger = prod(uint64(A.Factors{elementIndices(elementIndex)}).^uint64(A.Exponents{elementIndices(elementIndex)}));
             % Check for lossless conversion to requested type
             if absInteger>maxInteger
                 if isFloatClassname
@@ -113,10 +113,10 @@ function B = cast(A,varargin)
                 end
             end
             % Assign value to output array
-            if A.IsNegative(arrayIndices(elementIndex))
-                B(arrayIndices(elementIndex)) = -absInteger;
+            if A.IsNegative(elementIndices(elementIndex))
+                B(elementIndices(elementIndex)) = -absInteger;
             else
-                B(arrayIndices(elementIndex)) = absInteger;
+                B(elementIndices(elementIndex)) = absInteger;
             end
         end
     end

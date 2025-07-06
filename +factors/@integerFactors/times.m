@@ -35,30 +35,29 @@ function C = times(A,B)
         isNontrivial = ~(cellfun(@(Factors) isempty(Factors),A.Factors(isNonzero)) & cellfun(@(Factors) isempty(Factors),B.Factors(isNonzero)));
         if any(isNontrivial,"all")
             % Perform nontrivial calculation where appropriate
-            CIndices = find(isNonzero);
-            CIndices = CIndices(isNontrivial);
-            for elementIndex = 1:numel(CIndices)
+            elementIndices = find(isNonzero);
+            elementIndices = elementIndices(isNontrivial);
+            for elementIndex = elementIndices(:).'
                 % Find unique set of combined prime factors
-                index = CIndices(elementIndex);
-                C.Factors{index} = unique([A.Factors{index},B.Factors{index}]);
-                numberOfFactors = length(C.Factors{index});
+                C.Factors{elementIndex} = unique([A.Factors{elementIndex},B.Factors{elementIndex}]);
+                numberOfFactors = length(C.Factors{elementIndex});
                 % Sum the prime factor exponents (multiplicities)
-                C.Exponents{index} = zeros([1,numberOfFactors],"uint8");
+                C.Exponents{elementIndex} = zeros([1,numberOfFactors],"uint8");
                 for factorIndexC = 1:numberOfFactors
-                    factorIndexA = find(A.Factors{index}==C.Factors{index}(factorIndexC));
-                    factorIndexB = find(B.Factors{index}==C.Factors{index}(factorIndexC));
+                    factorIndexA = find(A.Factors{elementIndex}==C.Factors{elementIndex}(factorIndexC));
+                    factorIndexB = find(B.Factors{elementIndex}==C.Factors{elementIndex}(factorIndexC));
                     if isempty(factorIndexA)
-                        C.Exponents{index}(factorIndexC) = B.Exponents{index}(factorIndexB);
+                        C.Exponents{elementIndex}(factorIndexC) = B.Exponents{elementIndex}(factorIndexB);
                     elseif isempty(factorIndexB)
-                        C.Exponents{index}(factorIndexC) = A.Exponents{index}(factorIndexA);
+                        C.Exponents{elementIndex}(factorIndexC) = A.Exponents{elementIndex}(factorIndexA);
                     else
-                        if A.Exponents{index}(factorIndexA)>intmax("uint8")-B.Exponents{index}(factorIndexB)
+                        if A.Exponents{elementIndex}(factorIndexA)>intmax("uint8")-B.Exponents{elementIndex}(factorIndexB)
                             % Throw error if sum exceeds maximal integer
                             errorID = "integerFactors:times:exponentSumExceedsIntMax";
                             message = "Sum of factor exponents exceeds the largest value of type 'uint8'. See INTMAX.";
                             error(errorID,message)
                         end
-                        C.Exponents{index}(factorIndexC) = uint64(A.Exponents{index}(factorIndexA))+uint64(B.Exponents{index}(factorIndexB));
+                        C.Exponents{elementIndex}(factorIndexC) = uint64(A.Exponents{elementIndex}(factorIndexA))+uint64(B.Exponents{elementIndex}(factorIndexB));
                     end
                 end
             end

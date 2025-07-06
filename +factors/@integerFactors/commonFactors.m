@@ -49,42 +49,41 @@ function varargout = commonFactors(A,B)
         % Nontrivial calculation will be required if A and B are nonzero
         isNontrivial = ~(A.IsZero | B.IsZero);
         if any(isNontrivial,"all")
-            indices = find(isNontrivial);
-            for elementIndex = 1:numel(indices)
-                index = indices(elementIndex);
-                if A.IsNegative(index) && B.IsNegative(index)
+            elementIndices = find(isNontrivial);
+            for elementIndex = elementIndices(:).'
+                if A.IsNegative(elementIndex) && B.IsNegative(elementIndex)
                     % Common factor is negative
-                    R.IsNegative(index) = true;
-                    Ar.IsNegative(index) = false;
-                    Br.IsNegative(index) = false;
+                    R.IsNegative(elementIndex) = true;
+                    Ar.IsNegative(elementIndex) = false;
+                    Br.IsNegative(elementIndex) = false;
                 end
                 % Find matching prime factors
-                commonFactors = Ar.Factors{index}(ismember(Ar.Factors{index},Br.Factors{index}));
+                commonFactors = Ar.Factors{elementIndex}(ismember(Ar.Factors{elementIndex},Br.Factors{elementIndex}));
                 if ~isempty(commonFactors)
                     % Common prime factors found
-                    R.Factors{index} = commonFactors;
-                    numberOfFactors = length(R.Factors{index});
-                    R.Exponents{index} = zeros([1,numberOfFactors],"uint8");
+                    R.Factors{elementIndex} = commonFactors;
+                    numberOfFactors = length(R.Factors{elementIndex});
+                    R.Exponents{elementIndex} = zeros([1,numberOfFactors],"uint8");
                     for factorIndexR = 1:numberOfFactors
                         % Calculate common factor exponent (multiplicity)
-                        factorIndexAr = find(Ar.Factors{index}==R.Factors{index}(factorIndexR));
-                        factorIndexBr = find(Br.Factors{index}==R.Factors{index}(factorIndexR));
-                        if Ar.Exponents{index}(factorIndexAr)==Br.Exponents{index}(factorIndexBr)
-                            R.Exponents{index}(factorIndexR) = Ar.Exponents{index}(factorIndexAr);
-                            Ar.Factors{index}(factorIndexAr) = [];
-                            Ar.Exponents{index}(factorIndexAr) = [];
-                            Br.Factors{index}(factorIndexBr) = [];
-                            Br.Exponents{index}(factorIndexBr) = [];
-                        elseif Ar.Exponents{index}(factorIndexAr)<Br.Exponents{index}(factorIndexBr)
-                            R.Exponents{index}(factorIndexR) = Ar.Exponents{index}(factorIndexAr);
-                            Ar.Factors{index}(factorIndexAr) = [];
-                            Ar.Exponents{index}(factorIndexAr) = [];
-                            Br.Exponents{index}(factorIndexBr) = Br.Exponents{index}(factorIndexBr)-R.Exponents{index}(factorIndexR);
+                        factorIndexAr = find(Ar.Factors{elementIndex}==R.Factors{elementIndex}(factorIndexR));
+                        factorIndexBr = find(Br.Factors{elementIndex}==R.Factors{elementIndex}(factorIndexR));
+                        if Ar.Exponents{elementIndex}(factorIndexAr)==Br.Exponents{elementIndex}(factorIndexBr)
+                            R.Exponents{elementIndex}(factorIndexR) = Ar.Exponents{elementIndex}(factorIndexAr);
+                            Ar.Factors{elementIndex}(factorIndexAr) = [];
+                            Ar.Exponents{elementIndex}(factorIndexAr) = [];
+                            Br.Factors{elementIndex}(factorIndexBr) = [];
+                            Br.Exponents{elementIndex}(factorIndexBr) = [];
+                        elseif Ar.Exponents{elementIndex}(factorIndexAr)<Br.Exponents{elementIndex}(factorIndexBr)
+                            R.Exponents{elementIndex}(factorIndexR) = Ar.Exponents{elementIndex}(factorIndexAr);
+                            Ar.Factors{elementIndex}(factorIndexAr) = [];
+                            Ar.Exponents{elementIndex}(factorIndexAr) = [];
+                            Br.Exponents{elementIndex}(factorIndexBr) = Br.Exponents{elementIndex}(factorIndexBr)-R.Exponents{elementIndex}(factorIndexR);
                         else
-                            R.Exponents{index}(factorIndexR) = Br.Exponents{index}(factorIndexAr);
-                            Ar.Exponents{index}(factorIndexAr) = Ar.Exponents{index}(factorIndexAr)-R.Exponents{index}(factorIndexR);
-                            Br.Factors{index}(factorIndexBr) = [];
-                            Br.Exponents{index}(factorIndexBr) = [];
+                            R.Exponents{elementIndex}(factorIndexR) = Br.Exponents{elementIndex}(factorIndexAr);
+                            Ar.Exponents{elementIndex}(factorIndexAr) = Ar.Exponents{elementIndex}(factorIndexAr)-R.Exponents{elementIndex}(factorIndexR);
+                            Br.Factors{elementIndex}(factorIndexBr) = [];
+                            Br.Exponents{elementIndex}(factorIndexBr) = [];
                         end
                     end
                 end

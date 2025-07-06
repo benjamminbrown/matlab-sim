@@ -47,35 +47,35 @@ function TF = gt(A,B)
                 [R,Ar,Br] = commonFactors(nontrivialA(isComplicated),nontrivialB(isComplicated));
                 TFIndices = find(isNontrivial);
                 TFIndices = TFIndices(isComplicated);
-                for elementIndex = 1:numel(R)
-                    isUnitAr = isempty(Ar.Factors{elementIndex});
-                    isUnitBr = isempty(Br.Factors{elementIndex});
+                for RIndex = 1:numel(R)
+                    isUnitAr = isempty(Ar.Factors{RIndex});
+                    isUnitBr = isempty(Br.Factors{RIndex});
                     if ~isUnitAr && isUnitBr
                         % Absolute value of A exceeds B
-                        TF(TFIndices(elementIndex)) = true;
+                        TF(TFIndices(RIndex)) = true;
                     elseif isUnitAr && ~isUnitBr
                         % Absolute value of B exceeds A
-                        TF(TFIndices(elementIndex)) = false;
+                        TF(TFIndices(RIndex)) = false;
                     else
                         % Compare factors to determine absolute order
-                        numberOfFactorsAr = length(Ar.Factors{elementIndex});
-                        numberOfFactorsBr = length(Br.Factors{elementIndex});
+                        numberOfFactorsAr = length(Ar.Factors{RIndex});
+                        numberOfFactorsBr = length(Br.Factors{RIndex});
                         if numberOfFactorsAr>=numberOfFactorsBr && ...
-                                all(Ar.Factors{elementIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>Br.Factors{elementIndex}) && ...
-                                all(Ar.Exponents{elementIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>=Br.Exponents{elementIndex})
-                            TF(TFIndices(elementIndex)) = true;
+                                all(Ar.Factors{RIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>Br.Factors{RIndex}) && ...
+                                all(Ar.Exponents{RIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>=Br.Exponents{RIndex})
+                            TF(TFIndices(RIndex)) = true;
                         elseif numberOfFactorsBr>=numberOfFactorsAr && ...
-                                all(Br.Factors{elementIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>Ar.Factors{elementIndex}) && ...
-                                all(Br.Exponents{elementIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>=Ar.Exponents{elementIndex})
-                            TF(TFIndices(elementIndex)) = false;
+                                all(Br.Factors{RIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>Ar.Factors{RIndex}) && ...
+                                all(Br.Exponents{RIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>=Ar.Exponents{RIndex})
+                            TF(TFIndices(RIndex)) = false;
                         else
                             % Compare integers since all else failed
-                            TF(TFIndices(elementIndex)) = uint64(Ar(elementIndex))>uint64(Br(elementIndex));
+                            TF(TFIndices(RIndex)) = uint64(Ar(RIndex))>uint64(Br(RIndex));
                         end
                     end
-                    if R.IsNegative(elementIndex)
+                    if R.IsNegative(RIndex)
                         % Flip logical value if A and B are negative
-                        TF(TFIndices(elementIndex)) = ~TF(TFIndices(elementIndex));
+                        TF(TFIndices(RIndex)) = ~TF(TFIndices(RIndex));
                     end
                 end
             end
