@@ -14,7 +14,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %       I - Input array
 %         scalar | vector | matrix | multidimensional array
 %
-%   See also cast, factors.rationalFactors, factors.scaleFactors
+%   See also cast, factor, factors.rationalFactors, factors.scaleFactors
     properties (SetAccess=private)
         IsZero      logical = true                  % Logical value indicating whether an integer is equal to zero.
         IsNegative  logical = false                 % Logical value indicating whether an integer is negative.
