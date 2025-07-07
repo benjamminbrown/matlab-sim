@@ -71,6 +71,7 @@ function B = cast(A,varargin)
                 warning(warnID,message)
                 notWarned = false;
             end
+            % Assign value to output array
             if A.Numerator.IsNegative(elementIndex)~=A.Denominator.IsNegative(elementIndex)
                 B(elementIndex) = -double(absNumerator)/double(absDenominator);
             else
