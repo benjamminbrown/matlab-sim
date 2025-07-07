@@ -117,53 +117,12 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBePositive";
-                message = "Value must be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonpositive(A)
-            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNonpositive";
-                message = "Value must not be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonnegative(A)
-            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNonnegative";
-                message = "Value must be nonnegative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNegative(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNegative";
-                message = "Value must be negative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonzero(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero),"all")
-                errorID = "rationalFactors:mustBeNonzero";
-                message = "Value must not be zero.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeInteger(A)
-            errorID = "rationalFactors:mustBeInteger";
-            message = "Value must be integer.";
-            if ~all(isfinite(A),"all")
-                throwAsCaller(MException(errorID,message))
-            end
-            for elementIndex = 1:numel(A)
-                if ~(A.Numerator.IsZero(elementIndex) | isempty(A.Denominator.Factors{elementIndex}))
-                    throwAsCaller(MException(errorID,message))
-                end
-            end
-        end
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(A)
     end
 end
 %% VALIDATION FUNCTIONS
