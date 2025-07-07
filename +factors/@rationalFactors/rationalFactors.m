@@ -99,21 +99,11 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-            obj = factors.rationalFactors(uint8.empty(varargin{:}));
-        end
-        function obj = zeros(varargin)
-            obj = factors.rationalFactors(zeros(varargin{:},"uint8"));
-        end
-        function obj = ones(varargin)
-            obj = factors.rationalFactors(ones(varargin{:},"uint8"));
-        end
-        function obj = Inf(varargin)
-            obj = factors.rationalFactors(ones(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
-        end
-        function obj = NaN(varargin)
-            obj = factors.rationalFactors(zeros(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = zeros(varargin)
+        obj = ones(varargin)
+        obj = Inf(varargin)
+        obj = NaN(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
