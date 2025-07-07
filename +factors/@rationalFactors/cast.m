@@ -1,8 +1,29 @@
-function B = cast(A,newclass)
-    arguments
-        A
-        newclass    {mustBeTextScalar}
+function B = cast(A,varargin)
+    % Perform input argument validation
+    try
+        narginchk(2,3)
+    catch ME
+        errorID = "integerFactors:validation:narginchk";
+        error(errorID,ME.message)
     end
+    try
+        mustBeTextScalar(varargin{1})
+    catch ME
+        errorID = "integerFactors:validation:mustBeTextScalar";
+        message = strcat("Invalid argument at position 2. ",ME.message);
+        error(errorID,message)
+    end
+    if nargin==2
+        newclass = varargin{1};
+    else
+        if ~strcmp(varargin{1},"like")
+            errorID = "integerFactors:validation:invalidNameValueString";
+            message = "With three input arguments, the second argument must be 'like'.";
+            error(errorID,message)
+        end
+        newclass = class(varargin{2});
+    end
+    % Check for valid new class
     floatClassnames     = ["double";...
                            "single"];
     isValidClassname = any(strcmp(newclass,floatClassnames));
