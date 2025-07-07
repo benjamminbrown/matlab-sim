@@ -3,13 +3,13 @@ function B = cast(A,varargin)
     try
         narginchk(2,3)
     catch ME
-        errorID = "integerFactors:validation:narginchk";
+        errorID = "rationalFactors:validation:narginchk";
         error(errorID,ME.message)
     end
     try
         mustBeTextScalar(varargin{1})
     catch ME
-        errorID = "integerFactors:validation:mustBeTextScalar";
+        errorID = "rationalFactors:validation:mustBeTextScalar";
         message = strcat("Invalid argument at position 2. ",ME.message);
         error(errorID,message)
     end
@@ -17,7 +17,7 @@ function B = cast(A,varargin)
         newclass = varargin{1};
     else
         if ~strcmp(varargin{1},"like")
-            errorID = "integerFactors:validation:invalidNameValueString";
+            errorID = "rationalFactors:validation:invalidNameValueString";
             message = "With three input arguments, the second argument must be 'like'.";
             error(errorID,message)
         end
@@ -32,23 +32,31 @@ function B = cast(A,varargin)
         message = "Unsupported data conversion from 'factors.rationalFactors' to '%s'.";
         error(errorID,message,newclass)
     end
-    maxInteger = flintmax(newclass);
+    % Initialize the output array
     B = zeros(size(A),newclass);
-    notWarned = true;
-    elementIndices = find(~A.Numerator.IsZero(:) | A.Denominator.IsZero(:)).';
-    for elementIndex = elementIndices
-        absNumerator = uint64(abs(A.Numerator(elementIndex)));
-        absDenominator = uint64(abs(A.Denominator(elementIndex)));
-        if notWarned && any([absNumerator,absDenominator]>maxInteger)
-            warnID = "rationalFactors:cast:exceedsFloatIntMax";
-            message = "Integer numerator or denominator exceeds the largest consecutive integer in floating-point format. See FLINTMAX.";
-            warning(warnID,message)
-            notWarned = false;
-        end
-        if A.Numerator.IsNegative(elementIndex)~=A.Denominator.IsNegative(elementIndex)
-            B(elementIndex) = -double(absNumerator)/double(absDenominator);
-        else
-            B(elementIndex) = double(absNumerator)/double(absDenominator);
+    % Find the maximum integer for lossless conversion
+    maxInteger = flintmax(newclass);
+    % Check for nonzero elements
+    isNonzero = ~A.Numerator.IsZero | A.Denominator.IsZero;
+    if any(isNonzero,"all")
+        notWarned = true;
+        elementIndices = find(isNonzero);
+        for elementIndex = elementIndices(:).'
+            % Check for lossless conversion to new class
+            absNumerator = uint64(abs(A.Numerator(elementIndex)));
+            absDenominator = uint64(abs(A.Denominator(elementIndex)));
+            if notWarned && any([absNumerator,absDenominator]>maxInteger)
+                % Throw warning if inaccurate conversion
+                warnID = "rationalFactors:cast:exceedsFloatIntMax";
+                message = "Integer numerator or denominator exceeds the largest consecutive integer in floating-point format. See FLINTMAX.";
+                warning(warnID,message)
+                notWarned = false;
+            end
+            if A.Numerator.IsNegative(elementIndex)~=A.Denominator.IsNegative(elementIndex)
+                B(elementIndex) = -double(absNumerator)/double(absDenominator);
+            else
+                B(elementIndex) = double(absNumerator)/double(absDenominator);
+            end
         end
     end
 end
