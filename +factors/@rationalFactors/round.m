@@ -1,4 +1,4 @@
-function Y = round(X)
+function X = round(X)
     shiftedX = X+factors.rationalFactors(1,2);
-    Y = shiftedX-mod(shiftedX,1);
+    X = shiftedX-mod(shiftedX,1);
 end

@@ -1,5 +1,4 @@
-function Y = abs(X)
-    Y = X;
-    Y.Numerator = abs(X.Numerator);
-    Y.Denominator = abs(X.Denominator);
+function X = abs(X)
+    X.Numerator = abs(X.Numerator);
+    X.Denominator = abs(X.Denominator);
 end

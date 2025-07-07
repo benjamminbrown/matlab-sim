@@ -1,5 +1,4 @@
-function B = permute(A,dimorder)
-    B = A;
-    B.Numerator = permute(A.Numerator,dimorder);
-    B.Denominator = permute(A.Denominator,dimorder);
+function A = permute(A,dimorder)
+    A.Numerator = permute(A.Numerator,dimorder);
+    A.Denominator = permute(A.Denominator,dimorder);
 end

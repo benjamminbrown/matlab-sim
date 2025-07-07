@@ -1,4 +1,3 @@
-function Y = uminus(X)
-    Y = X;
-    Y.Numerator = -X.Numerator;
+function X = uminus(X)
+    X.Numerator = -X.Numerator;
 end
