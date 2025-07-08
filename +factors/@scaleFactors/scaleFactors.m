@@ -1,7 +1,7 @@
 classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) scaleFactors < matlab.mixin.indexing.RedefinesParen
     properties (SetAccess=private)
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)};
-        Exponents   {mustBeValidExponentsProperty}  = factors.rationalFactors.empty(1,0);
+        Factors     cell    = {uint64.empty(1,0)};
+        Exponents   cell    = {factors.rationalFactors.empty(1,0)};
     end
     %% CONSTRUCTOR
     methods
@@ -96,33 +96,6 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
     end
 end
 %% VALIDATION FUNCTIONS
-function mustBeValidFactorsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"uint64")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "scaleFactors:mustBeValidFactorsProperty";
-        message = "Factors property must be a cell array of finite positive row vectors of type 'factors.rationalFactors'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
-function mustBeValidExponentsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"factors.rationalFactors")
-            mustBeRow(prop{elementIndex})
-            mustBeFinite(prop{elementIndex})
-        end
-    catch
-        errorID = "scaleFactors:mustBeValidExponentsProperty";
-        message = "Exponents property must be a cell array of finite row vectors of type 'factors.rationalFactors'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
 function mustBeValidConstructorArgument(A)
     try
         if ~isa(A,["factors.scaleFactors","factors.rationalFactors"])
