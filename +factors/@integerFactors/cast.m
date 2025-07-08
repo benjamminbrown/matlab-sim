@@ -81,7 +81,7 @@ function B = cast(A,varargin)
     % Check for nonzero elements
     isNonzero = ~A.IsZero;
     if any(isNonzero,"all")
-        elementIndices = find(~A.IsZero(:));
+        elementIndices = find(isNonzero);
         for elementIndex = elementIndices(:).'
             if ~isempty(A.Factors{elementIndex})
                 % Check for lossless conversion to type "uint64"
@@ -91,6 +91,7 @@ function B = cast(A,varargin)
                     for count = 1:A.Exponents{elementIndex}(factorIndex)
                         fixedQuotient = idivide(fixedQuotient,factor);
                         if fixedQuotient==0
+                            % Throw error if inaccurate conversion
                             errorID = "integerFactors:cast:exceedsIntMax";
                             message = "Product of factors exceeds the largest value of type uint64. See INTMAX.";
                             error(errorID,message)

@@ -59,6 +59,7 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
         obj = cat(dim,varargin)
         B = permute(A,dimorder)
         B = transpose(A)
+        B = ctranspose(A)
         B = reshape(A,varargin)
         TF = isfinite(A)
         TF = isinf(A)
@@ -75,90 +76,43 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
         Y = ceil(X)
         Y = fix(X)
         Y = round(X)
-        X = uplus(X)
-        Y = uminus(X)
         Y = abs(X)
         Y = sign(X)
+        Zc = conj(Z)
+        C = uplus(A)
+        C = uminus(A)
         C = plus(A,B)
         C = minus(A,B)
         C = times(A,B)
+        C = mtimes(A,B)
         C = rdivide(A,B)
-        C = ldivide(A,B)
-        R = rem(A,B)
-        B = mod(A,M)
+        C = mrdivide(B,A)
+        C = ldivide(B,A)
+        C = mldivide(A,B)
         C = power(A,B)
         C = mpower(A,B)
-        B = cast(A,newclass)
+        R = rem(A,B)
+        B = mod(A,M)
+        B = cast(A,varargin)
         B = double(A)
         B = single(A)
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-            obj = factors.rationalFactors(uint8.empty(varargin{:}));
-        end
-        function obj = zeros(varargin)
-            obj = factors.rationalFactors(zeros(varargin{:},"uint8"));
-        end
-        function obj = ones(varargin)
-            obj = factors.rationalFactors(ones(varargin{:},"uint8"));
-        end
-        function obj = Inf(varargin)
-            obj = factors.rationalFactors(ones(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
-        end
-        function obj = NaN(varargin)
-            obj = factors.rationalFactors(zeros(varargin{:},"uint8"),zeros(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = zeros(varargin)
+        obj = ones(varargin)
+        obj = Inf(varargin)
+        obj = NaN(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBePositive";
-                message = "Value must be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonpositive(A)
-            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNonpositive";
-                message = "Value must not be positive.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonnegative(A)
-            if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNonnegative";
-                message = "Value must be nonnegative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNegative(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero) | A.Numerator.IsNegative==A.Denominator.IsNegative,"all")
-                errorID = "rationalFactors:mustBeNegative";
-                message = "Value must be negative.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeNonzero(A)
-            if any((A.Numerator.IsZero & ~A.Denominator.IsZero),"all")
-                errorID = "rationalFactors:mustBeNonzero";
-                message = "Value must not be zero.";
-                throwAsCaller(MException(errorID,message))
-            end
-        end
-        function mustBeInteger(A)
-            errorID = "rationalFactors:mustBeInteger";
-            message = "Value must be integer.";
-            if ~all(isfinite(A),"all")
-                throwAsCaller(MException(errorID,message))
-            end
-            for elementIndex = 1:numel(A)
-                if ~(A.Numerator.IsZero(elementIndex) | isempty(A.Denominator.Factors{elementIndex}))
-                    throwAsCaller(MException(errorID,message))
-                end
-            end
-        end
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(A)
     end
 end
 %% VALIDATION FUNCTIONS

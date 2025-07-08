@@ -1,5 +1,4 @@
-function B = transpose(A)
-    B = A;
-    B.Numerator = transpose(A.Numerator);
-    B.Denominator = transpose(A.Denominator);
+function A = transpose(A)
+    A.Numerator = transpose(A.Numerator);
+    A.Denominator = transpose(A.Denominator);
 end

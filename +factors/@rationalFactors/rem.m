@@ -1,4 +1,18 @@
 function R = rem(A,B)
+% REM - Remainder after division
+%   This function returns the remainder after division of a specified
+%   dividend by a specified divisor.
+%
+%   Syntax
+%     R = REM(A,B)
+%
+%   Input Arguments
+%     A - Dividend
+%       scalar | vector | matrix | multidimensional array
+%     B - Divisor
+%       scalar | vector | matrix | multidimensional array
+%
+%   See also mod
     arguments
         A   factors.rationalFactors
         B   factors.rationalFactors

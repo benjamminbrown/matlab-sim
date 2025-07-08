@@ -1,7 +1,7 @@
 function mustBeNonnegative(A)
 % MUSTBENONNEGATIVE - Validate that value is nonnegative
 %   This function throws an error if any value in the input
-%   factors.integerFactors array is negative.
+%   factors.rationalFactors array is negative.
 % 
 %   Syntax
 %     mustBeNonnegative(A)
@@ -9,8 +9,8 @@ function mustBeNonnegative(A)
 %   Input Arguments
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
-    if any(~A.IsZero & A.IsNegative,"all")
-        errorID = "integerFactors:validation:mustBeNonnegative";
+    if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
+        errorID = "rationalFactors:mustBeNonnegative";
         message = "Value must be nonnegative.";
         throwAsCaller(MException(errorID,message))
     end

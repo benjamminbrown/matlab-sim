@@ -1,5 +1,4 @@
-function B = reshape(A,varargin)
-    B = A;
-    B.Numerator = reshape(A.Numerator,varargin{:});
-    B.Denominator = reshape(A.Denominator,varargin{:});
+function A = reshape(A,varargin)
+    A.Numerator = reshape(A.Numerator,varargin{:});
+    A.Denominator = reshape(A.Denominator,varargin{:});
 end
