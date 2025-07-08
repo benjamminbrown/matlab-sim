@@ -72,27 +72,12 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(~)
-        end
-        function mustBeNonpositive(~)
-            errorID = "scaleFactors:mustBeNonpositive";
-            message = "Value must not be positive.";
-            throwAsCaller(MException(errorID,message));
-        end
-        function mustBeNonnegative(~)
-        end
-        function mustBeNegative(~)
-            errorID = "scaleFactors:mustBeNegative";
-            message = "Value must be negative.";
-            throwAsCaller(MException(errorID,message));
-        end
-        function mustBeNonzero(~)
-        end
-        function mustBeInteger(A) % TODO
-            errorID = "scaleFactors:mustBeInteger";
-            message = "Value must be integer.";
-            throwAsCaller(MException(errorID,message));
-        end
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(A) % TODO
     end
 end
 %% VALIDATION FUNCTIONS
