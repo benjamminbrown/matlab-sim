@@ -1,6 +1,6 @@
 function mustBeNonnegative(A)
 % MUSTBENONNEGATIVE - Validate that value is nonnegative
-%   This function throws an error if any value in the
+%   This function throws an error if any value in the input
 %   factors.integerFactors array is negative.
 % 
 %   Syntax

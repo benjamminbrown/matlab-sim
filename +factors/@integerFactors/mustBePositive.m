@@ -1,6 +1,6 @@
 function mustBePositive(A)
 % MUSTBEPOSITIVE - Validate that value is positive
-%   This function throws an error if any value in the
+%   This function throws an error if any value in the input
 %   factors.integerFactors array is not positive.
 % 
 %   Syntax

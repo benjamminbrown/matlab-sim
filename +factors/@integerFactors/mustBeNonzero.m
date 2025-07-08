@@ -1,6 +1,6 @@
 function mustBeNonzero(A)
 % MUSTBENONZERO - Validate that value is nonzero
-%   This function throws an error if any value in the
+%   This function throws an error if any value in the input
 %   factors.integerFactors array is zero.
 % 
 %   Syntax
