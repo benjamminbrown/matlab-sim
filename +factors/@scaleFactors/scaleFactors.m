@@ -67,12 +67,8 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-            obj = factors.scaleFactors(uint8.empty(varargin{:}));
-        end
-        function obj = ones(varargin)
-            obj = factors.scaleFactors(ones(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = ones(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
