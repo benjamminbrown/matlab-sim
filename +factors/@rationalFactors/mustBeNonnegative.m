@@ -10,7 +10,7 @@ function mustBeNonnegative(A)
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
     if any(~(A.Numerator.IsZero & ~A.Denominator.IsZero) & A.Numerator.IsNegative~=A.Denominator.IsNegative,"all")
-        errorID = "rationalFactors:mustBeNonnegative";
+        errorID = "rationalFactors:validation:mustBeNonnegative";
         message = "Value must be nonnegative.";
         throwAsCaller(MException(errorID,message))
     end

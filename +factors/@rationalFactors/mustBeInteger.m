@@ -9,7 +9,7 @@ function mustBeInteger(A)
 %   Input Arguments
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
-    errorID = "rationalFactors:mustBeInteger";
+    errorID = "rationalFactors:validation:mustBeInteger";
     message = "Value must be integer.";
     if ~all(isfinite(A),"all")
         throwAsCaller(MException(errorID,message))

@@ -11,7 +11,7 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %       obj = factors.integerFactors(I)
 % 
 %     Input Arguments
-%       I - Input array
+%       I - Integer array
 %         scalar | vector | matrix | multidimensional array
 %
 %   See also cast, factor, factors.rationalFactors, factors.scaleFactors

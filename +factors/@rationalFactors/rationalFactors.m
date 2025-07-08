@@ -1,17 +1,23 @@
 classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mixin.indexing.RedefinesParen
-% FACTORS.RATIONALFACTORS - Integer prime factorization class
-%   This class automatically stores the prime factorization for any
-%   supplied integer array with absolute values less than 2^64-1. It can be
-%   used to symbolically handle any numeric operations on the stored
-%   integers, including unary positive and negative, absolute value,
+% FACTORS.RATIONALFACTORS - Rational prime factorization class
+%   This class automatically stores the prime factorization for the integer
+%   numerator and denominator of a rational number. It makes use of the
+%   factors.integerFactors class to factorize the integers. It can be used
+%   to symbolically handle any numeric operations on the stored rational
+%   numbers, including unary positive and negative, absolute value,
 %   addition and subtraction, multiplication, and exponentiation.
 % 
 %   Creation
 %     Syntax
-%       obj = factors.rationalFactors(I)
+%       obj = factors.rationalFactors(A)
+%       obj = factors.rationalFactors(N,D)
 % 
 %     Input Arguments
-%       I - Input array
+%       A - Integer or rational array
+%         scalar | vector | matrix | multidimensional array
+%       N - Integer numerator array
+%         scalar | vector | matrix | multidimensional array
+%       D - Integer denominator array
 %         scalar | vector | matrix | multidimensional array
 %
 %   See also cast, factor, factors.integerFactors, factors.scaleFactors
@@ -26,30 +32,19 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
                 varargin    {mustBeValidConstructorArgument}
             end
             narginchk(1,2)
-            if isa(varargin{1},"factors.rationalFactors")
-                % Copy object array
-                obj = varargin{1};
-            else
-                % Assign object array to Numerator property
-                if isa(varargin{1},"factors.integerFactors")
-                    obj.Numerator = varargin{1};
+            if nargin==1
+                if isa(varargin{1},"factors.rationalFactors")
+                    % Copy object array
+                    obj = varargin{1};
                 else
+                    % Assign integer array to numerator property
                     obj.Numerator = factors.integerFactors(varargin{1});
+                    % Match sizes of numerator and denominator arrays
+                    obj.Denominator = repmat(obj.Denominator,size(obj.Numerator));
                 end
-                % Match sizes of numerator and denominator arrays
-                obj.Denominator = repmat(obj.Denominator,size(obj.Numerator));
-            end
-            if nargin==2
-                if isa(varargin{2},"factors.rationalFactors")
-                    % Implicitly divide by object array
-                    obj.Numerator = obj.Numerator.*varargin{2}.Denominator;
-                    obj.Denominator = obj.Denominator.*varargin{2}.Numerator;
-                else
-                    % Assign object array to Denominator property
-                    obj.Denominator = obj.Denominator.*factors.integerFactors(varargin{2});
-                end
-                % Remove common factors
-                [~,obj.Numerator,obj.Denominator] = commonFactors(obj.Numerator,obj.Denominator);
+            else
+                % Construct rationalFactors arrays and divide
+                obj = factors.rationalFactors(varargin{1})./factors.rationalFactors(varargin{2});
             end
         end
     end
@@ -129,7 +124,7 @@ function mustBeValidConstructorArgument(A)
             mustBeInteger(A)
         end
     catch
-        errorID = "rationalFactors:mustBeValidConstructorArgument";
+        errorID = "rationalFactors:validation:mustBeValidConstructorArgument";
         message = "Value must be either an integer or of type 'factors.rationalFactors'.";
         throwAsCaller(MException(errorID,message))
     end
