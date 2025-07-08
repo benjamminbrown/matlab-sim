@@ -14,7 +14,15 @@ function C = rdivide(A,B)
 %       scalar | vector | matrix | multidimensional array
 %
 %   See also ldivide, mrdivide, mldivide
-
-    % Pass operands to the factors.rationalFactors constructor
-    C = factors.rationalFactors(A,B);
+    arguments
+        A   factors.rationalFactors
+        B   factors.rationalFactors
+    end
+    % Initialize result
+    C = A;
+    % Perform division
+    C.Numerator = A.Numerator.*B.Denominator;
+    C.Denominator = A.Denominator.*B.Numerator;
+    % Remove common factors
+    [~,C.Numerator,C.Denominator] = commonFactors(C.Numerator,C.Denominator);
 end
