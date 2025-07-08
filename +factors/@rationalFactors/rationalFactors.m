@@ -1,7 +1,23 @@
 classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mixin.indexing.RedefinesParen
+% FACTORS.RATIONALFACTORS - Integer prime factorization class
+%   This class automatically stores the prime factorization for any
+%   supplied integer array with absolute values less than 2^64-1. It can be
+%   used to symbolically handle any numeric operations on the stored
+%   integers, including unary positive and negative, absolute value,
+%   addition and subtraction, multiplication, and exponentiation.
+% 
+%   Creation
+%     Syntax
+%       obj = factors.rationalFactors(I)
+% 
+%     Input Arguments
+%       I - Input array
+%         scalar | vector | matrix | multidimensional array
+%
+%   See also cast, factor, factors.integerFactors, factors.scaleFactors
     properties (SetAccess=private)
-        Numerator   {mustBeA(Numerator,"factors.integerFactors")}   = factors.integerFactors.zeros(1);
-        Denominator {mustBeA(Denominator,"factors.integerFactors")} = factors.integerFactors.ones(1);
+        Numerator   factors.integerFactors  = factors.integerFactors.zeros(1);  % Prime factorization of the integer numerator
+        Denominator factors.integerFactors  = factors.integerFactors.ones(1);   % Prime factorization of the integer denominator
     end
     %% CONSTRUCTOR
     methods
@@ -9,40 +25,31 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
             arguments (Repeating)
                 varargin    {mustBeValidConstructorArgument}
             end
-            switch nargin
-                case 0
-                    errorID = "rationalFactors:notEnoughInputArguments";
-                    message = "Not enough input arguments.";
-                    error(errorID,message)
-                case {1,2}
-                    if isa(varargin{1},"factors.rationalFactors")
-                        % Copy object array
-                        obj = varargin{1};
-                    else
-                        % Assign object array to Numerator property
-                        if isa(varargin{1},"factors.integerFactors")
-                            obj.Numerator = varargin{1};
-                        else
-                            obj.Numerator = factors.integerFactors(varargin{1});
-                        end
-                        obj.Denominator = repmat(obj.Denominator,size(obj.Numerator));
-                    end
-                    if nargin==2
-                        if isa(varargin{2},"factors.rationalFactors")
-                            % Implicitly divide by object array
-                            obj.Numerator = obj.Numerator.*varargin{2}.Denominator;
-                            obj.Denominator = obj.Denominator.*varargin{2}.Numerator;
-                        else
-                            % Assign object array to Denominator property
-                            obj.Denominator = obj.Denominator.*factors.integerFactors(varargin{2});
-                        end
-                        % Remove common factors
-                        [~,obj.Numerator,obj.Denominator] = commonFactors(obj.Numerator,obj.Denominator);
-                    end
-                otherwise
-                    errorID = "rationalFactors:tooManyInputArguments";
-                    message = "Too many input arguments.";
-                    error(errorID,message)
+            narginchk(1,2)
+            if isa(varargin{1},"factors.rationalFactors")
+                % Copy object array
+                obj = varargin{1};
+            else
+                % Assign object array to Numerator property
+                if isa(varargin{1},"factors.integerFactors")
+                    obj.Numerator = varargin{1};
+                else
+                    obj.Numerator = factors.integerFactors(varargin{1});
+                end
+                % Match sizes of numerator and denominator arrays
+                obj.Denominator = repmat(obj.Denominator,size(obj.Numerator));
+            end
+            if nargin==2
+                if isa(varargin{2},"factors.rationalFactors")
+                    % Implicitly divide by object array
+                    obj.Numerator = obj.Numerator.*varargin{2}.Denominator;
+                    obj.Denominator = obj.Denominator.*varargin{2}.Numerator;
+                else
+                    % Assign object array to Denominator property
+                    obj.Denominator = obj.Denominator.*factors.integerFactors(varargin{2});
+                end
+                % Remove common factors
+                [~,obj.Numerator,obj.Denominator] = commonFactors(obj.Numerator,obj.Denominator);
             end
         end
     end
