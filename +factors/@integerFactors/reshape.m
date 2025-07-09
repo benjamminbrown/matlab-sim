@@ -1,5 +1,5 @@
 function A = reshape(A,varargin)
-% RESHAPE - Permute array dimensions
+% RESHAPE - Reshape array by rearranging existing elements
 %   This function reshapes the input array using the specified size vector
 %   or set of dimension sizes.
 %

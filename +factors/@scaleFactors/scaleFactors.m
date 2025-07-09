@@ -1,7 +1,25 @@
 classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) scaleFactors < matlab.mixin.indexing.RedefinesParen
+% FACTORS.SCALEFACTORS - Scale prime factorization class
+%   This class is designed for the symbolic treatment of numeric scales,
+%   represented as a product of positive rational numbers raised to
+%   positive rational powers. It makes use of the classes
+%   factors.integerFactors and factors.rationalFactors to decompose these
+%   rational numbers into their prime factors. It can be used to
+%   symbolically handle numeric operations on the stored scales, such as
+%   multiplication and exponentiation.
+% 
+%   Creation
+%     Syntax
+%       obj = factors.scaleFactors(I)
+% 
+%     Input Arguments
+%       I - Integer or rational array
+%         scalar | vector | matrix | multidimensional array
+%
+%   See also cast, factor, factors.integerFactors, factors.rationalFactors
     properties (SetAccess=private)
-        Factors     {mustBeValidFactorsProperty}    = {uint64.empty(1,0)};
-        Exponents   {mustBeValidExponentsProperty}  = factors.rationalFactors.empty(1,0);
+        Factors     cell    = {uint64.empty(1,0)};
+        Exponents   cell    = {factors.rationalFactors.empty(1,0)};
     end
     %% CONSTRUCTOR
     methods
@@ -9,16 +27,12 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
             arguments (Repeating)
                 varargin    {mustBeValidConstructorArgument}
             end
-            switch nargin
-                case 0
-                    errorID = "scaleFactors:notEnoughInputArguments";
-                    message = "Not enough input arguments.";
-                    error(errorID,message)
-                case 1 % TODO
-                otherwise
-                    errorID = "scaleFactors:tooManyInputArguments";
-                    message = "Too many input arguments.";
-                    error(errorID,message)
+            narginchk(1,1)
+            if isa(varargin{1},"factors.scaleFactors")
+                % Copy object array
+                obj = varargin{1};
+            elseif isa(varargin{1},"factors.rationalFactors") % TODO
+            else % TODO
             end
         end
     end
@@ -35,6 +49,7 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         obj = cat(dim,varargin)
         B = permute(A,dimorder)
         B = transpose(A)
+        B = ctranspose(A)
         B = reshape(A,varargin)
         TF = isfinite(A)
         TF = isinf(A)
@@ -47,88 +62,48 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         TF = ge(A,B) % TODO
         TF = lt(A,B) % TODO
         TF = le(A,B) % TODO
-        X = abs(X)
+        Y = abs(X)
         Y = sign(X)
+        Zc = conj(Z)
         C = times(A,B) % TODO
+        C = mtimes(A,B) % TODO
         C = rdivide(A,B) % TODO
-        C = ldivide(A,B) % TODO
+        C = mrdivide(B,A) % TODO
+        C = ldivide(B,A) % TODO
+        C = mldivide(A,B) % TODO
         C = power(A,B) % TODO
-        C = mpower(A,B)
+        C = mpower(A,B) % TODO
         Y = nthroot(X,N) % TODO
+        B = sqrt(X) % TODO
         B = cast(A,newclass) % TODO
         B = double(A) % TODO
         B = single(A) % TODO
     end
     %% STATIC METHODS
     methods (Static)
-        function obj = empty(varargin)
-            obj = factors.scaleFactors(uint8.empty(varargin{:}));
-        end
-        function obj = ones(varargin)
-            obj = factors.scaleFactors(ones(varargin{:},"uint8"));
-        end
+        obj = empty(varargin)
+        obj = ones(varargin)
     end
     %% HIDDEN METHODS
     methods (Hidden)
-        function mustBePositive(~)
-        end
-        function mustBeNonpositive(~)
-            errorID = "scaleFactors:mustBeNonpositive";
-            message = "Value must not be positive.";
-            throwAsCaller(MException(errorID,message));
-        end
-        function mustBeNonnegative(~)
-        end
-        function mustBeNegative(~)
-            errorID = "scaleFactors:mustBeNegative";
-            message = "Value must be negative.";
-            throwAsCaller(MException(errorID,message));
-        end
-        function mustBeNonzero(~)
-        end
-        function mustBeInteger(A) % TODO
-            errorID = "scaleFactors:mustBeInteger";
-            message = "Value must be integer.";
-            throwAsCaller(MException(errorID,message));
-        end
+        mustBePositive(A)
+        mustBeNonpositive(A)
+        mustBeNonnegative(A)
+        mustBeNegative(A)
+        mustBeNonzero(A)
+        mustBeInteger(A) % TODO
     end
 end
 %% VALIDATION FUNCTIONS
-function mustBeValidFactorsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"uint64")
-            mustBeRow(prop{elementIndex})
-        end
-    catch
-        errorID = "scaleFactors:mustBeValidFactorsProperty";
-        message = "Factors property must be a cell array of finite positive row vectors of type 'factors.rationalFactors'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
-function mustBeValidExponentsProperty(prop)
-    try
-        mustBeA(prop,"cell")
-        for elementIndex = 1:numel(prop)
-            mustBeA(prop{elementIndex},"factors.rationalFactors")
-            mustBeRow(prop{elementIndex})
-            mustBeFinite(prop{elementIndex})
-        end
-    catch
-        errorID = "scaleFactors:mustBeValidExponentsProperty";
-        message = "Exponents property must be a cell array of finite row vectors of type 'factors.rationalFactors'.";
-        throwAsCaller(MException(errorID,message))
-    end
-end
 function mustBeValidConstructorArgument(A)
     try
+        mustBePositive(A)
         if ~isa(A,["factors.scaleFactors","factors.rationalFactors"])
             mustBeInteger(A)
         end
     catch
         errorID = "scaleFactors:mustBeValidConstructorArgument";
-        message = "Value must be either an integer or one of these types: 'factors.scaleFactors' or 'factors.rationalFactors'.";
+        message = "Value must be positive and either an integer or one of these types: 'factors.scaleFactors' or 'factors.rationalFactors'.";
         throwAsCaller(MException(errorID,message))
     end
 end
