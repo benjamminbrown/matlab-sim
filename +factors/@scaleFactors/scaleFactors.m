@@ -125,7 +125,7 @@ function mustBeValidConstructorArgument(A)
             mustBeInteger(A)
         end
     catch
-        errorID = "scaleFactors:mustBeValidConstructorArgument";
+        errorID = "scaleFactors:validation:mustBeValidConstructorArgument";
         message = "Value must be positive and either an integer or one of these types: 'factors.scaleFactors' or 'factors.rationalFactors'.";
         throwAsCaller(MException(errorID,message))
     end
