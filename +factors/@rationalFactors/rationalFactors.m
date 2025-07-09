@@ -15,9 +15,9 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
 %     Input Arguments
 %       A - Integer or rational array
 %         scalar | vector | matrix | multidimensional array
-%       N - Integer numerator array
+%       N - Integer or rational numerator array
 %         scalar | vector | matrix | multidimensional array
-%       D - Integer denominator array
+%       D - Integer or rational denominator array
 %         scalar | vector | matrix | multidimensional array
 %
 %   See also cast, factor, factors.integerFactors, factors.scaleFactors
