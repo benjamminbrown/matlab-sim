@@ -9,7 +9,7 @@ function mustBeNegative(~)
 %   Input Arguments
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
-    errorID = "scaleFactors:mustBeNegative";
+    errorID = "scaleFactors:validation:mustBeNegative";
     message = "Value must be negative.";
     throwAsCaller(MException(errorID,message));
 end
