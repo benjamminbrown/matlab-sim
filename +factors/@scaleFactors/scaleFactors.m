@@ -6,7 +6,7 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
 %   factors.integerFactors and factors.rationalFactors to decompose these
 %   rational numbers into their prime factors. It can be used to
 %   symbolically handle numeric operations on the stored scales, such as
-%   multiplication and exponentiation.
+%   multiplication, division, and exponentiation.
 % 
 %   Creation
 %     Syntax
@@ -94,8 +94,8 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         C = mrdivide(B,A) % TODO
         C = ldivide(B,A) % TODO
         C = mldivide(A,B) % TODO
-        C = power(A,B) % TODO
-        C = mpower(A,B) % TODO
+        C = power(A,B)
+        C = mpower(A,B)
         Y = nthroot(X,N) % TODO
         B = sqrt(X) % TODO
         B = cast(A,newclass) % TODO
