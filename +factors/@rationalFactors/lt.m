@@ -21,11 +21,11 @@ function TF = lt(A,B)
         % Return empty array
         TF = logical.empty(size(A));
     else
-        % Comparison is trivially false if either operand is NaN
-        TF = ~isnan(A) & ~isnan(B);
+        % Comparison is trivially false if operands are NaN or equal
+        TF = ~(isnan(A) | isnan(B) | A==B);
         if any(TF,"all")
-            % Negate the result of greater than or equal to
-            TF(TF) = ~(A(TF)>=B(TF));
+            % Negate the result of greater than
+            TF(TF) = ~(A(TF)>B(TF));
         end
     end
 end
