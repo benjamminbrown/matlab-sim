@@ -21,7 +21,7 @@ function TF = gt(A,B)
         % Return empty array
         TF = logical.empty(size(A));
     else
-        % Nontrivial calculation will be required if A and B are finite
+        % Nontrivial calculation is necessary for finite operands
         TF = ~(isnan(A) | isnan(B)) & ...
              ((isinf(A) & double(sign(A))>0) | (isinf(B) & double(sign(B))<0));
         isNontrivial = isfinite(A) & isfinite(B) & A~=B;
@@ -47,35 +47,35 @@ function TF = gt(A,B)
                 [R,Ar,Br] = commonFactors(nontrivialA(isComplicated),nontrivialB(isComplicated));
                 TFIndices = find(isNontrivial);
                 TFIndices = TFIndices(isComplicated);
-                for RIndex = 1:numel(R)
-                    isUnitAr = isempty(Ar.Factors{RIndex});
-                    isUnitBr = isempty(Br.Factors{RIndex});
+                for elementIndex = 1:numel(R)
+                    isUnitAr = isempty(Ar.Factors{elementIndex});
+                    isUnitBr = isempty(Br.Factors{elementIndex});
                     if ~isUnitAr && isUnitBr
                         % Absolute value of A exceeds B
-                        TF(TFIndices(RIndex)) = true;
+                        TF(TFIndices(elementIndex)) = true;
                     elseif isUnitAr && ~isUnitBr
                         % Absolute value of B exceeds A
-                        TF(TFIndices(RIndex)) = false;
+                        TF(TFIndices(elementIndex)) = false;
                     else
                         % Compare factors to determine absolute order
-                        numberOfFactorsAr = length(Ar.Factors{RIndex});
-                        numberOfFactorsBr = length(Br.Factors{RIndex});
+                        numberOfFactorsAr = length(Ar.Factors{elementIndex});
+                        numberOfFactorsBr = length(Br.Factors{elementIndex});
                         if numberOfFactorsAr>=numberOfFactorsBr && ...
-                                all(Ar.Factors{RIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>Br.Factors{RIndex}) && ...
-                                all(Ar.Exponents{RIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>=Br.Exponents{RIndex})
-                            TF(TFIndices(RIndex)) = true;
+                                all(Ar.Factors{elementIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>Br.Factors{elementIndex}) && ...
+                                all(Ar.Exponents{elementIndex}(numberOfFactorsAr-(numberOfFactorsBr-1):numberOfFactorsAr)>=Br.Exponents{elementIndex})
+                            TF(TFIndices(elementIndex)) = true;
                         elseif numberOfFactorsBr>=numberOfFactorsAr && ...
-                                all(Br.Factors{RIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>Ar.Factors{RIndex}) && ...
-                                all(Br.Exponents{RIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>=Ar.Exponents{RIndex})
-                            TF(TFIndices(RIndex)) = false;
+                                all(Br.Factors{elementIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>Ar.Factors{elementIndex}) && ...
+                                all(Br.Exponents{elementIndex}(numberOfFactorsBr-(numberOfFactorsAr-1):numberOfFactorsBr)>=Ar.Exponents{elementIndex})
+                            TF(TFIndices(elementIndex)) = false;
                         else
                             % Compare integers since all else failed
-                            TF(TFIndices(RIndex)) = uint64(Ar(RIndex))>uint64(Br(RIndex));
+                            TF(TFIndices(elementIndex)) = uint64(Ar(elementIndex))>uint64(Br(elementIndex));
                         end
                     end
-                    if R.IsNegative(RIndex)
+                    if R.IsNegative(elementIndex)
                         % Flip logical value if A and B are negative
-                        TF(TFIndices(RIndex)) = ~TF(TFIndices(RIndex));
+                        TF(TFIndices(elementIndex)) = ~TF(TFIndices(elementIndex));
                     end
                 end
             end

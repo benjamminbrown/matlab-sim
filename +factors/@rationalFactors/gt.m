@@ -21,10 +21,8 @@ function TF = gt(A,B)
         % Return empty array
         TF = logical.empty(size(A));
     else
-        % Comparison is trivially false if either operand is NaN or equal
-        TF = ~(isnan(A) | isnan(B));
-        isEqual = A==B;
-        TF(isEqual) = false;
+        % Comparison is trivially false if operands are NaN or equal
+        TF = ~(isnan(A) | isnan(B) | A==B);
         % Perform infinite comparisons
         isInfiniteA = isinf(A);
         isInfiniteB = isinf(B);
