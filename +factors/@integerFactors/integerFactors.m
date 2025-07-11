@@ -1,5 +1,5 @@
 classdef integerFactors < matlab.mixin.indexing.RedefinesParen
-% FACTORS.INTEGERFACTORS - Integer prime factorization class
+% FACTORS.INTEGERFACTORS - Integer prime factor decomposition class
 %   This class automatically stores the prime factorization for any
 %   supplied integer array with absolute values less than 2^64-1. It can be
 %   used to symbolically handle any numeric operations on the stored
@@ -16,10 +16,10 @@ classdef integerFactors < matlab.mixin.indexing.RedefinesParen
 %
 %   See also cast, factor, factors.rationalFactors, factors.scaleFactors
     properties (SetAccess=private)
-        IsZero      logical = true                  % Logical value indicating whether an integer is equal to zero.
-        IsNegative  logical = false                 % Logical value indicating whether an integer is negative.
-        Factors     cell    = {uint64.empty(1,0)}   % Row vector of an integer's prime factors.
-        Exponents   cell    = {uint8.empty(1,0)}    % Row vector of an integer's prime factor exponents (multiplicity).
+        IsZero      logical = true                  % Logical value indicating whether the integer is equal to zero.
+        IsNegative  logical = false                 % Logical value indicating whether the integer is negative.
+        Factors     cell    = {uint64.empty(1,0)}   % Row vector of the prime factors.
+        Exponents   cell    = {uint8.empty(1,0)}    % Row vector of the prime factor exponents (multiplicity).
     end
     %% CONSTRUCTOR
     methods

@@ -1,5 +1,5 @@
 classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mixin.indexing.RedefinesParen
-% FACTORS.RATIONALFACTORS - Rational prime factorization class
+% FACTORS.RATIONALFACTORS - Rational prime factor decomposition class
 %   This class automatically stores the prime factorization for the integer
 %   numerator and denominator of a rational number. It makes use of the
 %   factors.integerFactors class to factorize the integers. It can be used
@@ -22,8 +22,8 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
 %
 %   See also cast, factor, factors.integerFactors, factors.scaleFactors
     properties (SetAccess=private)
-        Numerator   factors.integerFactors  = factors.integerFactors.zeros(1);  % Prime factorization of the integer numerator
-        Denominator factors.integerFactors  = factors.integerFactors.ones(1);   % Prime factorization of the integer denominator
+        Numerator   factors.integerFactors  = factors.integerFactors.zeros(1);  % Prime factor decomposition of the numerator
+        Denominator factors.integerFactors  = factors.integerFactors.ones(1);   % Prime factor decomposition of the denominator
     end
     %% CONSTRUCTOR
     methods
