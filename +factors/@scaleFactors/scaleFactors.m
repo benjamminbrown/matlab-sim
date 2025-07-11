@@ -1,5 +1,5 @@
 classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) scaleFactors < matlab.mixin.indexing.RedefinesParen
-% FACTORS.SCALEFACTORS - Scale prime factorization class
+% FACTORS.SCALEFACTORS - Scale prime factor decomposition class
 %   This class is designed for the symbolic treatment of numeric scales,
 %   represented as a product of positive rational numbers raised to
 %   positive rational powers. It makes use of the classes
@@ -18,8 +18,8 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
 %
 %   See also cast, factor, factors.integerFactors, factors.rationalFactors
     properties (SetAccess=private)
-        Factors     cell    = {uint64.empty(1,0)};
-        Exponents   cell    = {factors.rationalFactors.empty(1,0)};
+        Factors     cell    = {uint64.empty(1,0)};                  % Row vector of the prime factors.
+        Exponents   cell    = {factors.rationalFactors.empty(1,0)}; % Row vector of the prime factor rational exponents.
     end
     %% CONSTRUCTOR
     methods
@@ -98,9 +98,9 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         C = mpower(A,B)
         Y = nthroot(X,N)
         B = sqrt(X)
-        B = cast(A,newclass) % TODO
-        B = double(A) % TODO
-        B = single(A) % TODO
+        B = cast(A,newclass)
+        B = double(A)
+        B = single(A)
     end
     %% STATIC METHODS
     methods (Static)
