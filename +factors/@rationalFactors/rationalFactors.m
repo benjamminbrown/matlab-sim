@@ -9,11 +9,11 @@ classdef (InferiorClasses={?factors.integerFactors}) rationalFactors < matlab.mi
 % 
 %   Creation
 %     Syntax
-%       obj = factors.rationalFactors(A)
+%       obj = factors.rationalFactors(S)
 %       obj = factors.rationalFactors(N,D)
 % 
 %     Input Arguments
-%       A - Integer or rational array
+%       S - Integer or rational array
 %         scalar | vector | matrix | multidimensional array
 %       N - Integer or rational numerator array
 %         scalar | vector | matrix | multidimensional array
