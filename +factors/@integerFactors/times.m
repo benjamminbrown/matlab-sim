@@ -41,16 +41,19 @@ function C = times(A,B)
                 % Find unique set of combined prime factors
                 C.Factors{elementIndex} = unique([A.Factors{elementIndex},B.Factors{elementIndex}]);
                 numberOfFactors = length(C.Factors{elementIndex});
-                % Sum the prime factor exponents (multiplicities)
+                % Initialize the prime factor exponents (multiplicities)
                 C.Exponents{elementIndex} = zeros([1,numberOfFactors],"uint8");
                 for factorIndexC = 1:numberOfFactors
                     factorIndexA = find(A.Factors{elementIndex}==C.Factors{elementIndex}(factorIndexC));
                     factorIndexB = find(B.Factors{elementIndex}==C.Factors{elementIndex}(factorIndexC));
                     if isempty(factorIndexA)
+                        % Prime factor comes only from B
                         C.Exponents{elementIndex}(factorIndexC) = B.Exponents{elementIndex}(factorIndexB);
                     elseif isempty(factorIndexB)
+                        % Prime factor comes only from A
                         C.Exponents{elementIndex}(factorIndexC) = A.Exponents{elementIndex}(factorIndexA);
                     else
+                        % Sum the prime factor exponents where appropriate
                         if A.Exponents{elementIndex}(factorIndexA)>intmax("uint8")-B.Exponents{elementIndex}(factorIndexB)
                             % Throw error if sum exceeds maximal integer
                             errorID = "integerFactors:times:exponentSumExceedsIntMax";

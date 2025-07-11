@@ -15,7 +15,7 @@ function X = nthroot(X,N)
 %   See also sqrt, power
     arguments
         X   factors.scaleFactors
-        N   factors.rationalFactors
+        N   factors.rationalFactors {mustBeNonzero}
     end
     % Invert root and pass to power method
     X = power(X,N.^-1);

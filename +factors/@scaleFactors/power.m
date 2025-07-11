@@ -16,7 +16,7 @@ function A = power(A,B)
 %   See also mpower, nthroot, sqrt
     arguments
         A   factors.scaleFactors
-        B   factors.rationalFactors
+        B   factors.rationalFactors {mustBeFinite}
     end
     % Implicitly expand singleton dimensions of input arrays
     [A,B] = utility.implicitArrayExpansion(A,B);
