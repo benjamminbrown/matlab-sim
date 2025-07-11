@@ -21,7 +21,7 @@ function TF = gt(A,B)
         % Return empty array
         TF = logical.empty(size(A));
     else
-        % Nontrivial calculation will be required if A and B are finite
+        % Nontrivial calculation is necessary for finite operands
         TF = ~(isnan(A) | isnan(B)) & ...
              ((isinf(A) & double(sign(A))>0) | (isinf(B) & double(sign(B))<0));
         isNontrivial = isfinite(A) & isfinite(B) & A~=B;
