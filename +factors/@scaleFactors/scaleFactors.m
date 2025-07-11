@@ -10,10 +10,10 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
 % 
 %   Creation
 %     Syntax
-%       obj = factors.scaleFactors(I)
+%       obj = factors.scaleFactors(S)
 % 
 %     Input Arguments
-%       I - Integer or rational array
+%       S - Integer or rational array
 %         scalar | vector | matrix | multidimensional array
 %
 %   See also cast, factor, factors.integerFactors, factors.rationalFactors
@@ -114,7 +114,7 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         mustBeNonnegative(A)
         mustBeNegative(A)
         mustBeNonzero(A)
-        mustBeInteger(A) % TODO
+        mustBeInteger(A)
     end
 end
 %% VALIDATION FUNCTIONS
