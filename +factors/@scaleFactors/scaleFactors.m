@@ -98,9 +98,9 @@ classdef (InferiorClasses={?factors.integerFactors,?factors.rationalFactors}) sc
         C = mpower(A,B)
         Y = nthroot(X,N)
         B = sqrt(X)
-        B = cast(A,newclass) % TODO
-        B = double(A) % TODO
-        B = single(A) % TODO
+        B = cast(A,newclass)
+        B = double(A)
+        B = single(A)
     end
     %% STATIC METHODS
     methods (Static)
