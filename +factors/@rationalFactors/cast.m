@@ -1,7 +1,8 @@
 function B = cast(A,varargin)
 % CAST - Convert variable to different data type
-%   This function returns the integers in the factors.integerFactors array
-%   converted to the specified data type (class).
+%   This function returns the rational numbers in the
+%   factors.rationalFactors array converted to the specified data type
+%   (class).
 %
 %   Syntax
 %     B = cast(A,newclass)
@@ -11,8 +12,7 @@ function B = cast(A,varargin)
 %     A - Input array
 %       scalar | vector | matrix | multidimensional array
 %     newclass - New class
-%       "single" | "double" | "int8" | "int16" | "int32" | "int64" |
-%       "uint8" | "uint16" | "uint32" | "uint64"
+%       "single" | "double"
 %     p - Prototype
 %       scalar | vector | matrix | multidimensional array
 %
